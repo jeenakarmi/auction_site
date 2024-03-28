@@ -36,9 +36,9 @@ class UserLogin(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         
 class UserLogout(APIView):
-    # assume user request is authenticated
-    permission_classes = (permissions.IsAuthenticated,)
-    authentication_classes = (SessionAuthentication, )
+    # assume user request is authenticated (anyone can logout)
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
     ##
     def post(self, request):
         logout(request)
