@@ -23,6 +23,15 @@ python manage.py runserver
 
 ### Runnind Vite server
 
-1.  `cd frontend`
-2.  `npm install`
-3.  `npm run dev`
+1.  Change directory to `forntend/`:
+```bash
+cd frontend
+```
+2.  Install the dependencies:
+```bash
+npm install
+```
+3.  Run the vite app:
+```bash
+npm run dev
+```
