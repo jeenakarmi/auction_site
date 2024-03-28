@@ -15,8 +15,8 @@ To run the project as a dev you can just run the Django server for backend and V
 ```bash
 pip install -r requirements.txt
 ```
-4.  Create a database on local `pgAdmin` and set up environment variables for `settings.py` in the folder `backend/`.
-5: Run the server
+3.  Create a database on local `pgAdmin` and set up environment variables for `settings.py` in the folder `backend/`.
+4.  Run the server
 ```bash
 python manage.py runserver
 ```
