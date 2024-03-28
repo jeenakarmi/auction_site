@@ -11,9 +11,14 @@ To run the project as a dev you can just run the Django server for backend and V
 ### Running Django server
 
 1.  `cd auction_site` assuming you've cloned the repo without changing root directory name.
-2.  Install all dependencies listed in `requirements.txt`:```pip install -r requirements.txt```
+2.  Install all dependencies listed in `requirements.txt`:
+```bash
+pip install -r requirements.txt
+```
 4.  Create a database on local `pgAdmin` and set up environment variables for `settings.py` in the folder `backend/`.
-5.  `python manage.py runserver`
+5: ```bash
+python manage.py runserver
+```
 
 ### Runnind Vite server
 
