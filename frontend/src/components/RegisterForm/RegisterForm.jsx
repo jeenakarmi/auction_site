@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link as ReactRouterLink } from 'react-router-dom';
 import {
     FormControl,
     FormLabel,
@@ -10,6 +11,7 @@ import {
     Stack,
     Button,
     Text,
+    Link as ChakraLink,
 } from '@chakra-ui/react';
 
 import { useGlobalContext } from '../../context/GlobalContext';
@@ -94,9 +96,9 @@ const RegisterForm = () => {
             <Button type='submit' colorScheme='blue'>
                 Register
             </Button>
-            <Text onClick={() => setRegistrationToggle(false)}>
+            <ChakraLink as={ReactRouterLink} to={'/login'}>
                 Have an account? Log in instead!
-            </Text>
+            </ChakraLink>
         </form>
     );
 };
