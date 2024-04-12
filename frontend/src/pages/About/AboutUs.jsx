@@ -5,7 +5,7 @@ import logo from './logo.png';
 
 const AboutUsPage = () => {
     return (
-        <div className="about-us-container">
+        // <div className="about-us-container">
             <div className="company-card">
                 <div className="logo-column">
                     <img src={logo} alt="Company Logo" className="company-logo" />              
@@ -28,7 +28,7 @@ const AboutUsPage = () => {
                     </p>
                 </div>
             </div>
-        </div>
+        // </div>
     );
 };
 
