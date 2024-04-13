@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from django.core.exceptions import ValidationError
+from .models import BidItem
 
 UserModel = get_user_model()
 
@@ -38,3 +39,14 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = ('id', 'email', 'username', 'phone', 'userType', 'last_login')
+
+# Bid Item serializer for item creation
+class BidItemCreationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BidItem
+        fields = "__all__"
+
+    def create(self, validated_data):
+        if not validated_data.get('currentPrice'):
+            validated_data['currentPrice'] = validated_data.get('startingPrice', 0)
+        return super().create(validated_data)

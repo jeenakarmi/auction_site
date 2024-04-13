@@ -37,12 +37,12 @@ class BidItem(models.Model):
     usedPeriod = models.IntegerField(null=True, blank=True)
     itemDescription = models.CharField(max_length=1000)
 
-    itemImage = models.ImageField(_("Image"), upload_to=upload_to, default='item/default.jpg')
+    itemImage = models.ImageField(_("Image"), upload_to=upload_to, default='items/default.jpg')
 
     startingPrice = models.DecimalField(max_digits=8, decimal_places=2)
     seller = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    currentPrice = models.DecimalField(max_digits=8, decimal_places=2)
-    bidder = models.ForeignKey(AppUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='bidder')
+    currentPrice = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    bidder = models.ForeignKey(AppUser, on_delete=models.SET_NULL, null=True, blank=-True, related_name='bidder')
     isSold = models.BooleanField(default=False)
 
     creationDate = models.DateTimeField(auto_now_add=True)
