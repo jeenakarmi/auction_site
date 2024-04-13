@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, Link as ReactRouterLink } from 'react-router-dom';
+import { MdFileUpload } from 'react-icons/md';
 import {
     Box,
     Stack,
@@ -64,6 +65,27 @@ const NavBar = () => {
                         );
                     })}
                 </HStack>
+                <ChakraLink
+                    as={ReactRouterLink}
+                    to={'/add-item'}
+                    width={150}
+                    height={50}
+                    fontSize={'1.2rem'}
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    padding={2}
+                    rounded={5}
+                    backgroundColor={'#6A994E'}
+                    color={'white'}
+                    _hover={{
+                        textDecoration: 'none',
+                        backgroundColor: '#567d3e',
+                    }}
+                >
+                    <MdFileUpload fontSize={'1.8rem'} className='mr-1' /> Add
+                    Item
+                </ChakraLink>
                 <HStack gap={2} align={'center'} justify={'center'}>
                     <ChakraLink
                         as={ReactRouterLink}
