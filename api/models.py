@@ -39,9 +39,9 @@ class BidItem(models.Model):
 
     itemImage = models.ImageField(_("Image"), upload_to=upload_to, default='items/default.jpg')
 
-    startingPrice = models.DecimalField(max_digits=8, decimal_places=2)
+    startingPrice = models.DecimalField(max_digits=10, decimal_places=2)
     seller = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    currentPrice = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    currentPrice = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     bidder = models.ForeignKey(AppUser, on_delete=models.SET_NULL, null=True, blank=-True, related_name='bidder')
     isSold = models.BooleanField(default=False)
 
