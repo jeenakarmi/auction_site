@@ -30,15 +30,21 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:5173',
+]
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # This is to allow cors to interact with react
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
+    'http://127.0.0.1:5173',
     'http://127.0.0.1:5173'
 ]
-
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:5173',
+]
 
 # Application definition
 
