@@ -12,6 +12,10 @@ import {
     ListItem,
 } from '@chakra-ui/react';
 
+import { useGlobalContext } from '../../context/GlobalContext';
+
+import LoggedInUserNavMenu from '../LoggedInUserNavMenu/LoggedInUserNavMenu';
+
 // navigation links
 const navlinks = [
     {
@@ -25,6 +29,38 @@ const navlinks = [
 ];
 
 const NavBar = () => {
+    const { currentUser } = useGlobalContext();
+
+    const RenderAddItemForm = () => {
+        console.log(currentUser);
+        if (currentUser.userType === 'SELLER') {
+            console.log('hello');
+            return (
+                <ChakraLink
+                    as={ReactRouterLink}
+                    to={'/add-item'}
+                    width={150}
+                    height={50}
+                    fontSize={'1.2rem'}
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    padding={2}
+                    rounded={5}
+                    backgroundColor={'#6A994E'}
+                    color={'white'}
+                    _hover={{
+                        textDecoration: 'none',
+                        backgroundColor: '#567d3e',
+                    }}
+                >
+                    <MdFileUpload fontSize={'1.8rem'} className='mr-1' /> Add
+                    Item
+                </ChakraLink>
+            );
+        }
+    };
+
     return (
         <Stack
             width={'100%'}
@@ -65,71 +101,55 @@ const NavBar = () => {
                         );
                     })}
                 </HStack>
-                <ChakraLink
-                    as={ReactRouterLink}
-                    to={'/add-item'}
-                    width={150}
-                    height={50}
-                    fontSize={'1.2rem'}
-                    display={'flex'}
-                    justifyContent={'center'}
-                    alignItems={'center'}
-                    padding={2}
-                    rounded={5}
-                    backgroundColor={'#6A994E'}
-                    color={'white'}
-                    _hover={{
-                        textDecoration: 'none',
-                        backgroundColor: '#567d3e',
-                    }}
-                >
-                    <MdFileUpload fontSize={'1.8rem'} className='mr-1' /> Add
-                    Item
-                </ChakraLink>
-                <HStack gap={2} align={'center'} justify={'center'}>
-                    <ChakraLink
-                        as={ReactRouterLink}
-                        to={'/login'}
-                        width={100}
-                        height={50}
-                        fontSize={'1.2rem'}
-                        display={'flex'}
-                        justifyContent={'center'}
-                        alignItems={'center'}
-                        padding={2}
-                        rounded={5}
-                        border={'3px solid #6A994E'}
-                        color={'#6A994E'}
-                        _hover={{
-                            textDecoration: 'none',
-                            backgroundColor: '#567d3e',
-                            border: 'none',
-                            color: 'white',
-                        }}
-                    >
-                        Login
-                    </ChakraLink>
-                    <ChakraLink
-                        as={ReactRouterLink}
-                        to={'/register'}
-                        width={100}
-                        height={50}
-                        fontSize={'1.2rem'}
-                        display={'flex'}
-                        justifyContent={'center'}
-                        alignItems={'center'}
-                        padding={2}
-                        rounded={5}
-                        backgroundColor={'#6A994E'}
-                        color={'white'}
-                        _hover={{
-                            textDecoration: 'none',
-                            backgroundColor: '#567d3e',
-                        }}
-                    >
-                        Sign Up
-                    </ChakraLink>
-                </HStack>
+                {currentUser && RenderAddItemForm()}
+                {currentUser ? (
+                    <LoggedInUserNavMenu />
+                ) : (
+                    <HStack gap={2} align={'center'} justify={'center'}>
+                        <ChakraLink
+                            as={ReactRouterLink}
+                            to={'/login'}
+                            width={100}
+                            height={50}
+                            fontSize={'1.2rem'}
+                            display={'flex'}
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                            padding={2}
+                            rounded={5}
+                            border={'3px solid #6A994E'}
+                            color={'#6A994E'}
+                            _hover={{
+                                textDecoration: 'none',
+                                backgroundColor: '#567d3e',
+                                border: 'none',
+                                color: 'white',
+                            }}
+                        >
+                            Login
+                        </ChakraLink>
+                        <ChakraLink
+                            as={ReactRouterLink}
+                            to={'/register'}
+                            width={100}
+                            height={50}
+                            fontSize={'1.2rem'}
+                            display={'flex'}
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                            padding={2}
+                            rounded={5}
+                            backgroundColor={'#6A994E'}
+                            color={'white'}
+                            _hover={{
+                                textDecoration: 'none',
+                                backgroundColor: '#567d3e',
+                            }}
+                        >
+                            Sign Up
+                        </ChakraLink>
+                    </HStack>
+                )}
             </HStack>
         </Stack>
     );
