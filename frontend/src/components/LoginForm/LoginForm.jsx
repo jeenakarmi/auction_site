@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as ReactRouterLink } from 'react-router-dom';
+import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import {
     FormControl,
     FormLabel,
@@ -18,7 +18,8 @@ import {
 import { useGlobalContext } from '../../context/GlobalContext';
 
 const LoginForm = () => {
-    const { client, setRegistrationToggle, setCurrentUser } =
+    const navigate = useNavigate();
+    const { GetCurrentUser, client, setRegistrationToggle, setCurrentUser } =
         useGlobalContext();
 
     const [email, setEmail] = useState('');
@@ -32,8 +33,8 @@ const LoginForm = () => {
         client
             .post('/api/login', currentUser)
             .then((res) => {
-                setCurrentUser(res.data);
-                console.log(res.data);
+                GetCurrentUser();
+                navigate('/'); // go to home after login
             })
             .catch((err) => console.log(err));
     };

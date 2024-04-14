@@ -16,8 +16,7 @@ const GlobalContext = createContext();
 const GlobalProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState();
     const [registrationToggle, setRegistrationToggle] = useState(false);
-
-    useEffect(() => {
+    const GetCurrentUser = () => {
         client
             .get('/api/user')
             .then((res) => {
@@ -28,6 +27,9 @@ const GlobalProvider = ({ children }) => {
                 console.log(err);
                 setCurrentUser(false);
             });
+    };
+    useEffect(() => {
+        GetCurrentUser();
     }, []);
 
     // function for posting new created bid item
@@ -70,6 +72,7 @@ const GlobalProvider = ({ children }) => {
     return (
         <GlobalContext.Provider
             value={{
+                GetCurrentUser,
                 currentUser,
                 setCurrentUser,
                 registrationToggle,

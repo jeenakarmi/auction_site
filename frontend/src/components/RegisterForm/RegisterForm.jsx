@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as ReactRouterLink } from 'react-router-dom';
+import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import {
     FormControl,
     FormLabel,
@@ -19,6 +19,7 @@ import {
 import { useGlobalContext } from '../../context/GlobalContext';
 
 const RegisterForm = () => {
+    const navigate = useNavigate();
     const { client, setRegistrationToggle } = useGlobalContext();
 
     const [email, setEmail] = useState('');
@@ -33,7 +34,10 @@ const RegisterForm = () => {
 
         client
             .post('/api/register', currentUser)
-            .then(setRegistrationToggle(false))
+            .then(() => {
+                alert('Account Created!');
+                navigate('/login');
+            })
             .catch((err) => console.log(err));
     };
 
