@@ -12,6 +12,7 @@ import {
     Textarea,
 } from '@chakra-ui/react';
 import ItemRadioGroup from '../ItemRadioGroup/ItemRadioGroup';
+import ItemSelectGroup from '../ItemSelectGroup/ItemSelectGroup';
 import { useGlobalContext } from '../../context/GlobalContext';
 
 const AddItemForm = () => {
@@ -40,6 +41,8 @@ const AddItemForm = () => {
         'Subaru',
         'Audi',
     ];
+    // type of the car
+    const type = ['TypeA', 'TypeB', 'TypeC', 'TypeD'];
     // category (bike or cars)
     const category = ['2 wheeler', '4 wheeler'];
     // used or not
@@ -71,6 +74,7 @@ const AddItemForm = () => {
                     ...bidItem,
                     itemBrand: e.target.value,
                 });
+                console.log(bidItem);
                 break;
             case 'itemModel':
                 setBitItem({
@@ -144,7 +148,7 @@ const AddItemForm = () => {
             </FormControl>
             <FormControl>
                 <FormLabel>Brand:</FormLabel>
-                <ItemRadioGroup
+                <ItemSelectGroup
                     groupArr={brands}
                     handleChange={handleChange}
                     name={'brand'}
@@ -160,7 +164,7 @@ const AddItemForm = () => {
             </FormControl>
             <FormControl>
                 <FormLabel>Model:</FormLabel>
-                <ItemRadioGroup
+                <ItemSelectGroup
                     groupArr={carModels}
                     handleChange={handleChange}
                     name={'itemModel'}
@@ -168,11 +172,10 @@ const AddItemForm = () => {
             </FormControl>
             <FormControl>
                 <FormLabel>Type:</FormLabel>
-                <Input
-                    type='text'
+                <ItemSelectGroup
                     name='itemType'
-                    value={bidItem.itemType}
-                    onChange={(e) => handleChange(e)}
+                    groupArr={type}
+                    handleChange={handleChange}
                 />
             </FormControl>
             <FormControl>

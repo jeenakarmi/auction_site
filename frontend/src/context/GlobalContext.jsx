@@ -30,6 +30,7 @@ const GlobalProvider = ({ children }) => {
             });
     }, []);
 
+    // function for posting new created bid item
     const postNewItem = (data) => {
         const xsrfCookies = document.cookie
             .split(';')
