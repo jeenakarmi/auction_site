@@ -32,7 +32,7 @@ import {
     Td,
 } from '@chakra-ui/react';
 
-const imageBaseUrl = `../../../..`;
+import { useGlobalContext } from '../../context/GlobalContext';
 
 const ItemPage = () => {
     const formik = useFormik({
@@ -43,6 +43,9 @@ const ItemPage = () => {
             console.log(values);
         },
     });
+
+    const { currentUser } = useGlobalContext();
+
     const tempItem = {
         id: 1,
         itemName: 'Highlander',
@@ -210,28 +213,33 @@ const ItemPage = () => {
                             </Tbody>
                         </Table>
                     </TableContainer>
-                    <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
-                        <Heading size={'md'}>Place a bid</Heading>
-                        <form className='w-full' onSubmit={formik.handleSubmit}>
-                            <FormControl isRequired>
-                                <InputGroup>
-                                    <InputLeftElement>
-                                        <Text fontWeight={700}>Rs.</Text>
-                                    </InputLeftElement>
-                                    <Input
-                                        type='number'
-                                        name='bidAmount'
-                                        placeholder='Enter amount'
-                                        value={formik.values.bidAmount}
-                                        onChange={formik.handleChange}
-                                    />
-                                </InputGroup>
-                            </FormControl>
-                            <Button width={'100%'} mt={2} type='submit'>
-                                <FaGavel className='mr-2' /> Bid
-                            </Button>
-                        </form>
-                    </VStack>
+                    {currentUser.userType === 'BUYER' && (
+                        <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
+                            <Heading size={'md'}>Place a bid</Heading>
+                            <form
+                                className='w-full'
+                                onSubmit={formik.handleSubmit}
+                            >
+                                <FormControl isRequired>
+                                    <InputGroup>
+                                        <InputLeftElement>
+                                            <Text fontWeight={700}>Rs.</Text>
+                                        </InputLeftElement>
+                                        <Input
+                                            type='number'
+                                            name='bidAmount'
+                                            placeholder='Enter amount'
+                                            value={formik.values.bidAmount}
+                                            onChange={formik.handleChange}
+                                        />
+                                    </InputGroup>
+                                </FormControl>
+                                <Button width={'100%'} mt={2} type='submit'>
+                                    <FaGavel className='mr-2' /> Bid
+                                </Button>
+                            </form>
+                        </VStack>
+                    )}
                 </Stack>
             </Stack>
         </Stack>
