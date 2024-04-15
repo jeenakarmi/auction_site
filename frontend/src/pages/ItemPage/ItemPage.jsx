@@ -3,7 +3,7 @@ import { Link as ReactRouterLink } from 'react-router-dom';
 import { FaDollarSign, FaGavel } from 'react-icons/fa6';
 import { IoCaretBackSharp } from 'react-icons/io5';
 
-import { useFormik } from 'formik';
+import { useFormik, Field, Formik } from 'formik';
 
 import {
     Box,
@@ -37,7 +37,7 @@ const imageBaseUrl = `../../../..`;
 const ItemPage = () => {
     const formik = useFormik({
         initialValues: {
-            bidAmount: '100',
+            bidAmount: '',
         },
         onSubmit: (values) => {
             console.log(values);
@@ -54,7 +54,7 @@ const ItemPage = () => {
         usedPeriod: null,
         itemDescription:
             'Make the most out of a day with your crew in the stylish Highlander.',
-        itemImage: '/media/items/highlander.jpg',
+        itemImage: '/media/items/elevate.png',
         startingPrice: '39270.00',
         currentPrice: '39270.00',
         isSold: false,
@@ -67,7 +67,14 @@ const ItemPage = () => {
         username: 'jonathan',
     };
     return (
-        <Stack direction={'column'} w={'100%'} paddingX={5} gap={10}>
+        <Stack
+            direction={'column'}
+            w={'100%'}
+            maxW={'1024px'}
+            paddingX={5}
+            gap={10}
+            marginY={10}
+        >
             <ChakraLink
                 as={ReactRouterLink}
                 display={'inline-flex'}
@@ -207,22 +214,20 @@ const ItemPage = () => {
                         <Heading size={'md'}>Place a bid</Heading>
                         <form className='w-full' onSubmit={formik.handleSubmit}>
                             <FormControl isRequired>
-                                <NumberInput
-                                    name='bidAmount'
-                                    value={formik.values.bidAmount}
-                                    onChange={formik.handleChange}
-                                    step={1000}
-                                    min={0}
-                                    max={99999999.99}
-                                >
-                                    <NumberInputField placeholder='Enter your bid...' />
-                                    <NumberInputStepper>
-                                        <NumberIncrementStepper />
-                                        <NumberDecrementStepper />
-                                    </NumberInputStepper>
-                                </NumberInput>
+                                <InputGroup>
+                                    <InputLeftElement>
+                                        <FaDollarSign />
+                                    </InputLeftElement>
+                                    <Input
+                                        type='number'
+                                        name='bidAmount'
+                                        placeholder='Enter amount'
+                                        value={formik.values.bidAmount}
+                                        onChange={formik.handleChange}
+                                    />
+                                </InputGroup>
                             </FormControl>
-                            <Button width={'100%'} mt={2}>
+                            <Button width={'100%'} mt={2} type='submit'>
                                 <FaGavel className='mr-2' /> Bid
                             </Button>
                         </form>
