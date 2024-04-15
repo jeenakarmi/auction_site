@@ -48,9 +48,12 @@ const RegisterForm = () => {
             justifyContent={'center'}
             alignItems={'center'}
             flex={'1 0 auto'}
+            marginY={10}
         >
             <Stack
                 width={'30%'}
+                minW={'360px'}
+                maxW={'640px'}
                 rounded={10}
                 padding={10}
                 direction={'column'}
@@ -65,7 +68,7 @@ const RegisterForm = () => {
                     className='flex flex-col gap-4 justify-center items-center'
                 >
                     <FormControl isRequired>
-                        <FormLabel>Email:</FormLabel>
+                        <FormLabel fontWeight={600}>Email:</FormLabel>
                         <Input
                             type='email'
                             name='email'
@@ -75,7 +78,7 @@ const RegisterForm = () => {
                         />
                     </FormControl>
                     <FormControl isRequired>
-                        <FormLabel>Password:</FormLabel>
+                        <FormLabel fontWeight={600}>Password:</FormLabel>
                         <Input
                             type='password'
                             name='password'
@@ -84,7 +87,9 @@ const RegisterForm = () => {
                         />
                     </FormControl>
                     <FormControl isRequired>
-                        <FormLabel>Username:</FormLabel>
+                        <FormLabel fontWeight={600} l>
+                            Username:
+                        </FormLabel>
                         <Input
                             type='text'
                             name='username'
@@ -93,7 +98,7 @@ const RegisterForm = () => {
                         />
                     </FormControl>
                     <FormControl isRequired>
-                        <FormLabel>Phone No.:</FormLabel>
+                        <FormLabel fontWeight={600}>Phone No.:</FormLabel>
                         <Input
                             type='number'
                             name='phone'
@@ -102,7 +107,7 @@ const RegisterForm = () => {
                         />
                     </FormControl>
                     <FormControl isRequired>
-                        <FormLabel>User Type:</FormLabel>
+                        <FormLabel fontWeight={600}>User Type:</FormLabel>
                         <RadioGroup defaultValue={formik.values.userType}>
                             <Stack direction={'row'} gap={10}>
                                 <Radio
@@ -125,7 +130,11 @@ const RegisterForm = () => {
                     <Button type='submit' colorScheme='blue' width={'100%'}>
                         Sign Up
                     </Button>
-                    <ChakraLink as={ReactRouterLink} to={'/login'}>
+                    <ChakraLink
+                        as={ReactRouterLink}
+                        to={'/login'}
+                        fontWeight={600}
+                    >
                         Have an account? Log in instead!
                     </ChakraLink>
                 </form>

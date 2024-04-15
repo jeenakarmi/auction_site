@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import {
+    Box,
     FormControl,
     Input,
     FormLabel,
@@ -136,99 +137,114 @@ const AddItemForm = () => {
     };
 
     return (
-        <form onSubmit={(e) => handleSubmit(e)}>
-            <FormControl>
-                <FormLabel>Name:</FormLabel>
-                <Input
-                    type='text'
-                    name='itemName'
-                    value={bidItem.itemName}
-                    onChange={(e) => handleChange(e)}
-                />
-            </FormControl>
-            <FormControl>
-                <FormLabel>Brand:</FormLabel>
-                <ItemSelectGroup
-                    groupArr={brands}
-                    handleChange={handleChange}
-                    name={'brand'}
-                />
-            </FormControl>
-            <FormControl>
-                <FormLabel>Category:</FormLabel>
-                <ItemRadioGroup
-                    groupArr={category}
-                    handleChange={handleChange}
-                    name={'category'}
-                />
-            </FormControl>
-            <FormControl>
-                <FormLabel>Model:</FormLabel>
-                <ItemSelectGroup
-                    groupArr={carModels}
-                    handleChange={handleChange}
-                    name={'itemModel'}
-                />
-            </FormControl>
-            <FormControl>
-                <FormLabel>Type:</FormLabel>
-                <ItemSelectGroup
-                    name='itemType'
-                    groupArr={type}
-                    handleChange={handleChange}
-                />
-            </FormControl>
-            <FormControl>
-                <FormLabel>Brand New:</FormLabel>
-                <ItemRadioGroup
-                    groupArr={itemState}
-                    name={'isBrandNew'}
-                    handleChange={handleChange}
-                />
-            </FormControl>
-            {!bidItem.isBrandNew && (
+        <Box
+            width={'40%'}
+            minW={'480px'}
+            maxW={'640px'}
+            marginY={10}
+            rounded={10}
+            padding={10}
+            boxShadow={'0 0 30px 0 #38664150'}
+        >
+            <form
+                onSubmit={(e) => handleSubmit(e)}
+                className='w-full h-full flex flex-col gap-5'
+            >
                 <FormControl>
-                    <FormLabel>Used Years:</FormLabel>
+                    <FormLabel fontWeight={600}>Name:</FormLabel>
                     <Input
-                        type='number'
-                        name='usedPeriod'
-                        value={bidItem.usedPeriod}
+                        type='text'
+                        name='itemName'
+                        value={bidItem.itemName}
                         onChange={(e) => handleChange(e)}
                     />
                 </FormControl>
-            )}
-            <FormControl>
-                <FormLabel>Description:</FormLabel>
-                <Textarea
-                    placeholder='Write a short description about the item...'
-                    name='description'
-                    value={bidItem.itemDescription}
-                    onChange={(e) => handleChange(e)}
-                    maxLength={1000}
-                />
-            </FormControl>
-            <FormControl>
-                <FormLabel>Starting Price:</FormLabel>
-                <Input
-                    type='number'
-                    value={bidItem.startingPrice}
-                    onChange={(e) => handleChange(e)}
-                    step={'0.01'}
-                    pattern='\d{0,8}(\.\d{0,2})?'
-                    name='startingPrice'
-                />
-            </FormControl>
-            <FormControl>
-                <FormLabel>Image:</FormLabel>
-                <Input
-                    type='file'
-                    name='itemImage'
-                    accept='image/{jpg,png,jpeg}'
-                    onChange={(e) => handleChange(e)}
-                />
-            </FormControl>
-            <Button type='submit'>Submit</Button>
-        </form>
+                <FormControl>
+                    <FormLabel fontWeight={600}>Brand:</FormLabel>
+                    <ItemSelectGroup
+                        groupArr={brands}
+                        handleChange={handleChange}
+                        name={'brand'}
+                    />
+                </FormControl>
+                <FormControl>
+                    <FormLabel fontWeight={600}>Category:</FormLabel>
+                    <ItemRadioGroup
+                        groupArr={category}
+                        handleChange={handleChange}
+                        name={'category'}
+                    />
+                </FormControl>
+                <FormControl>
+                    <FormLabel fontWeight={600}>Model:</FormLabel>
+                    <ItemSelectGroup
+                        groupArr={carModels}
+                        handleChange={handleChange}
+                        name={'itemModel'}
+                    />
+                </FormControl>
+                <FormControl>
+                    <FormLabel fontWeight={600}>Type:</FormLabel>
+                    <ItemSelectGroup
+                        name='itemType'
+                        groupArr={type}
+                        handleChange={handleChange}
+                    />
+                </FormControl>
+                <FormControl>
+                    <FormLabel fontWeight={600}>Brand New:</FormLabel>
+                    <ItemRadioGroup
+                        groupArr={itemState}
+                        name={'isBrandNew'}
+                        handleChange={handleChange}
+                    />
+                </FormControl>
+                {!bidItem.isBrandNew && (
+                    <FormControl>
+                        <FormLabel fontWeight={600}>Used Years:</FormLabel>
+                        <Input
+                            type='number'
+                            name='usedPeriod'
+                            value={bidItem.usedPeriod}
+                            onChange={(e) => handleChange(e)}
+                        />
+                    </FormControl>
+                )}
+                <FormControl>
+                    <FormLabel fontWeight={600}>Description:</FormLabel>
+                    <Textarea
+                        placeholder='Write a short description about the item...'
+                        name='description'
+                        value={bidItem.itemDescription}
+                        onChange={(e) => handleChange(e)}
+                        maxLength={1000}
+                    />
+                </FormControl>
+                <FormControl>
+                    <FormLabel fontWeight={600}>Starting Price:</FormLabel>
+                    <Input
+                        type='number'
+                        value={bidItem.startingPrice}
+                        onChange={(e) => handleChange(e)}
+                        step={'0.01'}
+                        pattern='\d{0,8}(\.\d{0,2})?'
+                        name='startingPrice'
+                    />
+                </FormControl>
+                <FormControl>
+                    <FormLabel fontWeight={600}>Image:</FormLabel>
+                    <Input
+                        type='file'
+                        name='itemImage'
+                        accept='image/{jpg,png,jpeg}'
+                        onChange={(e) => handleChange(e)}
+                    />
+                </FormControl>
+                <Button type='submit' colorScheme='blue'>
+                    Submit
+                </Button>
+            </form>
+        </Box>
     );
 };
 

@@ -1,64 +1,69 @@
 .user-profile {
-    max-width: 900px;
-    width: 45%;
-    height: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    position:calc(20) /* Required for positioning pseudo-elements */
-  }
-  
-  .user-profile::before,
-  .user-profile::after {
-    content: '';
-    position: absolute;
-    width: 15%;
-    height: 5px;
-    background-image: linear-gradient(to right, transparent, #ccc, transparent);
-  }
-  
-  /* Line at the top right corner */
-  .user-profile::before {
-    top: 130px; /* Adjust the top offset here */
-    bottom: 50px;
-    right: 350px; /* Adjust the right offset here */
-    transform: rotate(45deg);
-  }
-  
-  /* Line at the bottom left corner */
-  .user-profile::after {
-    bottom: 70px; /* Adjust the bottom offset here */
-    left: 325px; /* Adjust the left offset here */
-    transform: rotate(45deg);
-  }
-  
-  .user-profile h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    text-align: center;
-  }
-  
-  .user-profile .detail {
-    width: 100%;
-    margin-bottom: 10px;
-    height: 40px;
-  }
-  
-  .user-profile .detail label {
-    font-weight: bold;
-  }
-  
-  .user-profile .detail p {
-    margin: 0;
-  }
-  
-  /* Separator */
-  .user-profile .separator {
-    width: 100%;
-    height: 1px;
-    background-color: #ccc;
-    margin-bottom: 20px;
-  }
-  
+  max-width: 500px;
+  width: 45%;
+  height: fit-content;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  position: relative; /* Required for positioning pseudo-elements */
+}
+
+.user-profile::before,
+.user-profile::after {
+  content: '';
+  position: absolute;
+  width: 35%;
+  height: 5px;
+  background-image: linear-gradient(to right, transparent, #ccc, transparent);
+}
+
+/* Line at the top right corner */
+.user-profile::before {
+  top: 10px;
+  bottom: 30px;
+  right: -50px;
+  transform: rotate(45deg);
+}
+
+/* Line at the bottom left corner */
+.user-profile::after {
+  bottom: 10px;
+  left: -60px;
+  transform: rotate(45deg);
+}
+
+.user-profile h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  text-align: center;
+}
+
+.user-profile .detail {
+  width: 100%;
+  margin-bottom: 10px;
+  height: 40px;
+}
+
+.user-profile .label-pair {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile .label-pair label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.user-profile .detail p {
+  margin: 0;
+}
+
+/* Separator */
+.user-profile .separator {
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  margin-bottom: 20px;
+}
