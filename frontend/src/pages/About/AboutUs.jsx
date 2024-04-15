@@ -1,10 +1,11 @@
-
 import React from 'react';
+import { Link } from 'react-router-dom'; 
 import './AboutUs.css'; 
 import logo from './logo.png';
 
 const AboutUsPage = () => {
     return (
+        <div>
             <div className="company-card">
                 <div className="logo-column">
                     <img src={logo} alt="Company Logo" className="company-logo" />              
@@ -23,10 +24,13 @@ const AboutUsPage = () => {
                     Join us at AUTOBIDs and discover a new way to navigate the automotive marketplace.
                     </p>
                     <p>
-                        Contact us today to learn more about how we can help you achieve your goals!
+                    <Link to="/contact" className="contact-link">Contact us </Link>  today to learn more about how we can help you achieve your goals!
                     </p>
+                    
+                    <Link to="/" className="back-button">Back to home</Link>
                 </div>
             </div>
+         </div>
     );
 };
 

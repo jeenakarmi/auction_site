@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
-from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer
+from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, BidItemCreationSerializer, BidItemSerializer
 from rest_framework import permissions, status
 from .validations import custom_validation, validate_email, validate_password, validate_userType
+from .models import BidItem
 
 class UserRegister(APIView):
     # anyone can register
@@ -34,6 +36,7 @@ class UserLogin(APIView):
             user = serializer.check_user(data)
             login(request, user)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
         
 class UserLogout(APIView):
     # assume user request is authenticated (anyone can logout)
@@ -51,3 +54,41 @@ class UserView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+    
+# view for bit item creation
+class BidItemCreationView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    # have to use these parsers for file uploads via form
+    parser_classes = (MultiPartParser, FormParser,)
+    def post(self, request, format=None):
+        print(request.data)
+        serializer = BidItemCreationSerializer(data = request.data)
+        if serializer.is_valid():
+            if not serializer.validated_data.get('currentPrice'):
+                serializer.validated_data['currentPrice'] = serializer.validated_data.get('startingPrice', 0)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# view to get individual bid item
+class AllBidItemView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    ##
+    def get(self, request):
+        bid_items = BidItem.objects.all()
+        serialzer = BidItemSerializer(bid_items, many=True)
+        return Response({'bidLots': serialzer.data}, status=status.HTTP_200_OK)
+
+# view to get individual bid item
+class IndividualBidItemView(APIView):
+    parser_classes = (permissions.AllowAny,)
+    ##
+    def get(self, request, pk):
+        try:
+            # Fetch the bid item with specified id
+            bid_item = BidItem.objects.get(pk=pk)
+        except BidItem.DoesNotExist:
+            return Response({'error': 'Bid item does not exist!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = BidItemSerializer(bid_item)
+        return Response(serializer.data, status=status.HTTP_200_OK)

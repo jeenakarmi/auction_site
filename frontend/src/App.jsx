@@ -10,6 +10,8 @@ import LoginForm from './components/LoginForm/LoginForm';
 import RegisterForm from './components/RegisterForm/RegisterForm';
 import Browse from './pages/Browse';
 import AboutUsPage from './pages/About/AboutUs';
+import AddItemForm from './components/AddItemForm/AddItemForm';
+import ItemPage from './pages/ItemPage/ItemPage';
 
 import Home from './pages/Home/Home';
 
@@ -27,10 +29,11 @@ const App = () => {
             <NavBar />
             <Routes>
                 <Route path='/' element={<Home />} />
-                <Route path="/about" element={<AboutUsPage />} />
+                <Route path='/about' element={<AboutUsPage />} />
                 <Route path='/login' element={<LoginForm />} />
                 <Route path='/register' element={<RegisterForm />} />
-                
+                <Route path='/add-item' element={<AddItemForm />} />
+                <Route path='/item/:id' element={<ItemPage />} />
             </Routes>
         </Stack>
     );

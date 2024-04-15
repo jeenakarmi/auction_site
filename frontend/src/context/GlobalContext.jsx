@@ -16,8 +16,7 @@ const GlobalContext = createContext();
 const GlobalProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState();
     const [registrationToggle, setRegistrationToggle] = useState(false);
-
-    useEffect(() => {
+    const GetCurrentUser = () => {
         client
             .get('/api/user')
             .then((res) => {
@@ -28,16 +27,58 @@ const GlobalProvider = ({ children }) => {
                 console.log(err);
                 setCurrentUser(false);
             });
+    };
+    useEffect(() => {
+        GetCurrentUser();
     }, []);
+
+    // function for posting new created bid item
+    const postNewItem = (data) => {
+        const xsrfCookies = document.cookie
+            .split(';')
+            .map((c) => c.trim())
+            .filter((c) => c.startsWith('csrftoken='))[0]
+            .split('=')[1];
+        console.log(xsrfCookies);
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'X-CSRFToken': xsrfCookies,
+            },
+        };
+        let formData = new FormData();
+        formData.append('itemName', data.itemName);
+        formData.append('itemBrand', data.itemBrand);
+        formData.append('itemModel', data.itemModel);
+        formData.append('itemCategory', data.itemCategory);
+        formData.append('itemType', data.itemType);
+        formData.append('isBrandNew', data.isBrandNew);
+        if (!data.isBrandNew) {
+            formData.append('usedPeriod', data.usedPeriod);
+        }
+        formData.append('itemDescription', data.itemDescription);
+        formData.append('itemImage', data.itemImage[0]);
+        formData.append('startingPrice', data.startingPrice);
+        formData.append('seller', currentUser.id);
+
+        client
+            .post('http://127.0.0.1:8000/api/item/create/', formData, config)
+            .then((res) => console.log(res))
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
     return (
         <GlobalContext.Provider
             value={{
+                GetCurrentUser,
                 currentUser,
                 setCurrentUser,
                 registrationToggle,
                 setRegistrationToggle,
                 client,
+                postNewItem,
             }}
         >
             {children}
