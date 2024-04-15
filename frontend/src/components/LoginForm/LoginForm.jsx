@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
 import {
     FormControl,
     FormLabel,
@@ -22,22 +23,22 @@ const LoginForm = () => {
     const { GetCurrentUser, client, setRegistrationToggle, setCurrentUser } =
         useGlobalContext();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [userType, setUserType] = useState('BUYER');
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const currentUser = { email, password, userType };
-
-        client
-            .post('/api/login', currentUser)
-            .then((res) => {
-                GetCurrentUser();
-                navigate('/'); // go to home after login
-            })
-            .catch((err) => console.log(err));
-    };
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: '',
+            userType: 'BUYER',
+        },
+        onSubmit: (values) => {
+            client
+                .post('/api/login', values)
+                .then((res) => {
+                    GetCurrentUser();
+                    navigate('/'); // go to home after login
+                })
+                .catch((err) => alert("Something's wrong! Try again later."));
+        },
+    });
 
     return (
         <Box
@@ -46,9 +47,12 @@ const LoginForm = () => {
             justifyContent={'center'}
             alignItems={'center'}
             flex={'1 0 auto'}
+            marginY={10}
         >
             <Stack
                 width={'30%'}
+                minW={'360px'}
+                maxW={'640px'}
                 rounded={10}
                 padding={10}
                 direction={'column'}
@@ -59,45 +63,43 @@ const LoginForm = () => {
                     Login
                 </Heading>
                 <form
-                    onSubmit={handleSubmit}
+                    onSubmit={formik.handleSubmit}
                     className='flex flex-col gap-4 justify-center items-center'
                 >
-                    <FormControl>
-                        <FormLabel>Email:</FormLabel>
+                    <FormControl isRequired>
+                        <FormLabel fontWeight={600}>Email:</FormLabel>
                         <Input
                             type='email'
                             name='email'
                             placeholder='email@gmail.com'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
                         />
                     </FormControl>
-                    <FormControl>
-                        <FormLabel>Password:</FormLabel>
+                    <FormControl isRequired>
+                        <FormLabel fontWeight={600}>Password:</FormLabel>
                         <Input
                             type='password'
                             name='password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
                         />
                     </FormControl>
-                    <FormControl>
-                        <FormLabel>User Type:</FormLabel>
-                        <RadioGroup defaultValue={userType}>
+                    <FormControl isRequired>
+                        <FormLabel fontWeight={600}>User Type:</FormLabel>
+                        <RadioGroup defaultValue={formik.values.userType}>
                             <Stack direction={'row'} gap={10}>
                                 <Radio
                                     value='BUYER'
-                                    onChange={(e) =>
-                                        setUserType(e.target.value)
-                                    }
+                                    name='userType'
+                                    onChange={formik.handleChange}
                                 >
                                     BUYER
                                 </Radio>
                                 <Radio
                                     value='SELLER'
-                                    onChange={(e) =>
-                                        setUserType(e.target.value)
-                                    }
+                                    name='userType'
+                                    onChange={formik.handleChange}
                                 >
                                     SELLER
                                 </Radio>
@@ -107,7 +109,11 @@ const LoginForm = () => {
                     <Button type='submit' colorScheme='blue' width={'100%'}>
                         Login
                     </Button>
-                    <ChakraLink as={ReactRouterLink} to={'/register'}>
+                    <ChakraLink
+                        as={ReactRouterLink}
+                        to={'/register'}
+                        fontWeight={600}
+                    >
                         Don't have an account? Register now!
                     </ChakraLink>
                 </form>
