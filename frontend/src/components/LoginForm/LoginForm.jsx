@@ -47,9 +47,12 @@ const LoginForm = () => {
             justifyContent={'center'}
             alignItems={'center'}
             flex={'1 0 auto'}
+            marginY={10}
         >
             <Stack
                 width={'30%'}
+                minW={'360px'}
+                maxW={'640px'}
                 rounded={10}
                 padding={10}
                 direction={'column'}
@@ -64,7 +67,7 @@ const LoginForm = () => {
                     className='flex flex-col gap-4 justify-center items-center'
                 >
                     <FormControl isRequired>
-                        <FormLabel>Email:</FormLabel>
+                        <FormLabel fontWeight={600}>Email:</FormLabel>
                         <Input
                             type='email'
                             name='email'
@@ -74,7 +77,7 @@ const LoginForm = () => {
                         />
                     </FormControl>
                     <FormControl isRequired>
-                        <FormLabel>Password:</FormLabel>
+                        <FormLabel fontWeight={600}>Password:</FormLabel>
                         <Input
                             type='password'
                             name='password'
@@ -83,7 +86,7 @@ const LoginForm = () => {
                         />
                     </FormControl>
                     <FormControl isRequired>
-                        <FormLabel>User Type:</FormLabel>
+                        <FormLabel fontWeight={600}>User Type:</FormLabel>
                         <RadioGroup defaultValue={formik.values.userType}>
                             <Stack direction={'row'} gap={10}>
                                 <Radio
@@ -106,7 +109,11 @@ const LoginForm = () => {
                     <Button type='submit' colorScheme='blue' width={'100%'}>
                         Login
                     </Button>
-                    <ChakraLink as={ReactRouterLink} to={'/register'}>
+                    <ChakraLink
+                        as={ReactRouterLink}
+                        to={'/register'}
+                        fontWeight={600}
+                    >
                         Don't have an account? Register now!
                     </ChakraLink>
                 </form>
