@@ -50,3 +50,9 @@ class BidItemCreationSerializer(serializers.ModelSerializer):
         if not validated_data.get('currentPrice'):
             validated_data['currentPrice'] = validated_data.get('startingPrice', 0)
         return super().create(validated_data)
+
+# Bid item serializer for getting individual item
+class BidItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BidItem
+        fields = "__all__"

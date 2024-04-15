@@ -54,7 +54,7 @@ class BidItem(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.itemName}\t{self.brand}\t{self.model}"
+        return f"{self.itemName}\t{self.itemBrand}\t{self.itemModel}"
     
 # make current price back to starting price if the bidder deletes their account
 @receiver(pre_delete, sender=AppUser)
