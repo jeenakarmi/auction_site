@@ -216,7 +216,7 @@ const ItemPage = () => {
                             <FormControl isRequired>
                                 <InputGroup>
                                     <InputLeftElement>
-                                        <FaDollarSign />
+                                        <Text fontWeight={700}>Rs.</Text>
                                     </InputLeftElement>
                                     <Input
                                         type='number'
