@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link as ReactRouterLink } from 'react-router-dom';
-import { FaGavel } from 'react-icons/fa6';
+import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
+import { FaGavel, FaTrashCan } from 'react-icons/fa6';
 import { IoCaretBackSharp } from 'react-icons/io5';
 import { useParams } from 'react-router-dom';
 
@@ -38,6 +38,7 @@ import { useGlobalContext } from '../../context/GlobalContext';
 import axios from 'axios';
 
 const ItemPage = () => {
+    const navigate = useNavigate();
     const { client } = useGlobalContext();
     const { id } = useParams();
     const [itemData, setItemData] = useState(null);
@@ -119,6 +120,54 @@ const ItemPage = () => {
         return <div>Not found...</div>;
     }
 
+    const handleCloseAuction = () => {
+        const xsrfCookies = document.cookie
+            .split(';')
+            .map((c) => c.trim())
+            .filter((c) => c.startsWith('csrftoken='))[0]
+            .split('=')[1];
+        const config = {
+            headers: {
+                'X-CSRFToken': xsrfCookies,
+            },
+        };
+        if (confirm(`Sell this lot to ${bidder}?`)) {
+            client
+                .post('/api/item/close-auction', { bidItemId: id }, config)
+                .then((res) => {
+                    navigate('/my-active-lots');
+                    alert('Auction for this lot closed!');
+                })
+                .catch((err) => {
+                    alert('Something went wrong! Try again later!');
+                });
+        }
+    };
+
+    const handleDeleteAuction = () => {
+        const xsrfCookies = document.cookie
+            .split(';')
+            .map((c) => c.trim())
+            .filter((c) => c.startsWith('csrftoken='))[0]
+            .split('=')[1];
+        const config = {
+            headers: {
+                'X-CSRFToken': xsrfCookies,
+            },
+        };
+        if (confirm(`Delete this lot from auction?`)) {
+            client
+                .delete(`/api/item/delete/${id}/`, config)
+                .then((res) => {
+                    navigate('/my-active-lots');
+                    alert('Auction for this lot deleted!');
+                })
+                .catch((err) => {
+                    alert('Something went wrong! Try again later!');
+                });
+        }
+    };
+
     const RenderBidButton = () => {
         if (currentUser.userType === 'BUYER') {
             return (
@@ -144,6 +193,23 @@ const ItemPage = () => {
                         </Button>
                     </form>
                 </VStack>
+            );
+        } else {
+            return (
+                !itemData.isSold && (
+                    <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
+                        <Button width={'100%'} onClick={handleCloseAuction}>
+                            <FaGavel className='mr-2' /> Close Auction
+                        </Button>
+                        <Button
+                            width={'100%'}
+                            colorScheme={'red'}
+                            onClick={handleDeleteAuction}
+                        >
+                            <FaTrashCan className='mr-2' /> Delete Auction
+                        </Button>
+                    </VStack>
+                )
             );
         }
     };
