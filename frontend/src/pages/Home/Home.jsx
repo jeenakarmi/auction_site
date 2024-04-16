@@ -13,6 +13,7 @@
 
 import React, { useState, useEffect } from 'react';
 import './Home.css';
+import { car_data } from '../../data/car_data.jsx';
 
 const Home = () => {
   const [auctions, setAuctions] = useState([]);
@@ -59,31 +60,78 @@ const Home = () => {
     if (filterBy === 'brand') {
       filtered = filtered.filter((auction) => auction.brand.includes(brandFilter));
     } else if (filterBy === 'price') {
-      filtered = filtered.filter((auction) => auction.price <= parseFloat(priceFilter));
+      const [min, max] = priceFilter.split('-');
+      filtered = filtered.filter((auction) => auction.price >= parseFloat(min) && auction.price <= parseFloat(max));
     } else if (filterBy === 'model') {
       filtered = filtered.filter((auction) => auction.model.includes(modelFilter));
     }
     setFilteredAuctions(filtered);
   };
 
+  const getBrands = () => {
+    return ['All', ...new Set(car_data.flatMap((brand) => brand.brandName))];
+  };
+
+  const getModels = () => {
+    if (brandFilter === 'All' || !brandFilter) {
+      return ['All', ...car_data.flatMap((brand) => brand.models.flatMap((model) => model.modelType))];
+    }
+    const brand = car_data.find((b) => b.brandName === brandFilter);
+    return ['All', ...brand.models.flatMap((model) => model.modelType)];
+  };
+
+  const getPriceOptions = () => {
+    return [
+      'All',
+      '0-20,00,000',
+      '20,00,001-60,00,000',
+      '60,00,001-1,00,00,000',
+      '1,00,00,001-1,40,00,000',
+    ];
+  };
+
   return (
     <div className="home-container">
       <div className="filters">
-        <select name="filterBy" value={filterBy} onChange={handleFilterChange}>
-          <option value="all">All</option>
-          <option value="brand">Brand</option>
-          <option value="price">Price</option>
-          <option value="model">Model</option>
-        </select>
-        {filterBy === 'brand' && (
-          <input type="text" name="brand" value={brandFilter} onChange={handleFilterChange} placeholder="Filter by brand" />
-        )}
-        {filterBy === 'price' && (
-          <input type="text" name="price" value={priceFilter} onChange={handleFilterChange} placeholder="Filter by price" />
-        )}
-        {filterBy === 'model' && (
-          <input type="text" name="model" value={modelFilter} onChange={handleFilterChange} placeholder="Filter by model" />
-        )}
+        <div className="filter-item">
+          <label htmlFor="filterBy">Filter By:</label>
+          <select id="filterBy" name="filterBy" value={filterBy} onChange={handleFilterChange}>
+            <option value="all">All</option>
+            {/* <option value="brand">Brand</option>
+            <option value="price">Price</option>
+            <option value="model">Model</option> */}
+          </select>
+        </div>
+        <div className="filter-item">
+          <label htmlFor="brand">Brand:</label>
+          <select id="brand" name="brand" value={brandFilter} onChange={handleFilterChange}>
+            {getBrands().map((brand) => (
+              <option key={brand} value={brand}>
+                {brand}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="filter-item">
+          <label htmlFor="price">Price:</label>
+          <select id="price" name="price" value={priceFilter} onChange={handleFilterChange}>
+            {getPriceOptions().map((price) => (
+              <option key={price} value={price}>
+                {price}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="filter-item">
+          <label htmlFor="model">Model:</label>
+          <select id="model" name="model" value={modelFilter} onChange={handleFilterChange}>
+            {getModels().map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className="auctions-grid">
         {filteredAuctions.map((auction) => (
