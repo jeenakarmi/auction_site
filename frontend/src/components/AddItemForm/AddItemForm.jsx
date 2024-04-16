@@ -102,10 +102,6 @@ const AddItemForm = () => {
     };
 
     const handleModelChange = (e) => {
-        setBitItem({
-            ...bidItem,
-            itemModel: e.target.value,
-        });
         const newTypes = [];
         let newVariants = [];
         const currentVehicleArr = car_data
@@ -122,6 +118,13 @@ const AddItemForm = () => {
         if (tempVariantArr && tempVariantArr.length > 0) {
             newVariants = tempVariantArr;
         }
+
+        setBitItem({
+            ...bidItem,
+            itemModel: e.target.value,
+            itemType: newTypes[0],
+            itemVariant: newVariants.length > 0 ? newVariants[0] : '',
+        });
 
         setType(newTypes);
         setVariants(newVariants);

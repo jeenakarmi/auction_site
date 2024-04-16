@@ -52,6 +52,7 @@ const GlobalProvider = ({ children }) => {
         formData.append('itemModel', data.itemModel);
         formData.append('itemCategory', data.itemCategory);
         formData.append('itemType', data.itemType);
+        formData.append('itemVariant', data.itemVariant);
         formData.append('isBrandNew', data.isBrandNew);
         if (!data.isBrandNew) {
             formData.append('usedPeriod', data.usedPeriod);
