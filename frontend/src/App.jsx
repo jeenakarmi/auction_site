@@ -18,8 +18,8 @@ import UserProfile from './pages/User/userprofile';
 
 import ItemPage from './pages/ItemPage/ItemPage';
 
-
 import Home from './pages/Home/Home';
+import PlacedTopBids from './pages/PlacedTopBids/PlacedTopBids';
 
 const App = () => {
     const { currentUser } = useGlobalContext();
@@ -40,8 +40,9 @@ const App = () => {
                 <Route path='/login' element={<LoginForm />} />
                 <Route path='/register' element={<RegisterForm />} />
                 <Route path='/add-item' element={<AddItemForm />} />
-                <Route path='/user' element={< UserProfile />} />
+                <Route path='/user' element={<UserProfile />} />
                 <Route path='/item/:id' element={<ItemPage />} />
+                <Route path='/placed-top-bids' element={<PlacedTopBids />} />
             </Routes>
         </Stack>
     );

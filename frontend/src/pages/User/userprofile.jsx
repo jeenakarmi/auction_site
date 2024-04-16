@@ -55,15 +55,21 @@ const UserProfile = () => {
       </div>
       </div>
             <div className='separator'></div> */}
-                         <div className='actions-container'>
+                        <div className='actions-container'>
                             <div className='link-container'>
-                                <Link to='/purchased-bids' className='profile-link'>
+                                <Link
+                                    to='/purchased-bids'
+                                    className='profile-link'
+                                >
                                     Purchased Bids
                                 </Link>
                             </div>
                             <div className='link-container'>
-                                <Link to='/placed-bids' className='profile-link'>
-                                    Placed Bids
+                                <Link
+                                    to='/placed-top-bids'
+                                    className='profile-link'
+                                >
+                                    Placed Top Bids
                                 </Link>
                             </div>
                             <div className='delete-account-button-container'>

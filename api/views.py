@@ -148,3 +148,12 @@ class PlaceBidView(APIView):
         bid_item.save()
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+# view to get items that top bidder is the user
+class PlacedTopBidsView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    ##
+    def get(self, request):
+        bid_items = BidItem.objects.filter(bidder=request.user)
+        serializer = BidItemSerializer(bid_items, many=True)
+        return Response({'bidLots': serializer.data}, status=status.HTTP_200_OK)
