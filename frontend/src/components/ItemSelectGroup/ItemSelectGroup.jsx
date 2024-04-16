@@ -8,13 +8,9 @@ const ItemSelectGroup = ({ groupArr, name, handleChange }) => {
             name={name}
             onChange={(e) => handleChange(e)}
         >
-            {groupArr.map((selectOption) => {
+            {groupArr.map((selectOption, index) => {
                 return (
-                    <option
-                        key={selectOption}
-                        value={selectOption}
-                        className='my-10'
-                    >
+                    <option key={index} value={selectOption} className='my-10'>
                         {selectOption}
                     </option>
                 );

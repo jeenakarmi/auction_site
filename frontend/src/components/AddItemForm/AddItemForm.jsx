@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
     Box,
@@ -16,50 +16,81 @@ import ItemRadioGroup from '../ItemRadioGroup/ItemRadioGroup';
 import ItemSelectGroup from '../ItemSelectGroup/ItemSelectGroup';
 import { useGlobalContext } from '../../context/GlobalContext';
 
+// car data
+import { car_data } from '../../data/car_data';
+
 const AddItemForm = () => {
     const { postNewItem } = useGlobalContext();
-    // car model list
-    const carModels = [
-        'SUV',
-        'Sedan',
-        'Convertible',
-        'Coupe',
-        'Electric',
-        'Hatchback',
-        'Crossover',
-        'Hybrid',
-        'Luxury',
-    ];
-    // car brands list
-    const brands = [
-        'Honda',
-        'Toyota',
-        'BMW',
-        'Suzuki',
-        'Tesla',
-        'Ford',
-        'Ferrari',
-        'Subaru',
-        'Audi',
-    ];
-    // type of the car
-    const type = ['TypeA', 'TypeB', 'TypeC', 'TypeD'];
+
+    const [brands, setBrands] = useState([]);
+    const [carModels, setCarModels] = useState([]);
+    const [type, setType] = useState([]);
+
+    useEffect(() => {
+        let newBrands = [];
+        let newCarModels = [];
+        let newVariants = [];
+        car_data.map((car) => {
+            newBrands.push(car.brandName);
+        });
+        car_data[0].models.map((model) => {
+            newCarModels.push(model.modelType);
+        });
+        car_data[0].models[0].vehicles.map((vehicle) => {
+            newVariants.push(vehicle.vehicleName);
+        });
+        setBrands(newBrands);
+        setCarModels(newCarModels);
+        setType(newVariants);
+    }, []);
+
     // category (bike or cars)
     const category = ['2 wheeler', '4 wheeler'];
     // used or not
     const itemState = ['Brand New', 'Used'];
     const [bidItem, setBitItem] = useState({
         itemName: '',
-        itemBrand: brands[0],
-        itemModel: carModels[0],
+        itemBrand: car_data[0].brandName,
+        itemModel: car_data[0].models[0].modelType,
         itemCategory: category[0],
-        itemType: '',
+        itemType: car_data[0].models[0].vehicles[0].vehicleName,
         isBrandNew: true,
         usedPeriod: 0,
         itemDescription: '',
         itemImage: null,
         startingPrice: 0.0,
     });
+
+    const handleBrandChange = (e) => {
+        setBitItem({
+            ...bidItem,
+            itemBrand: e.target.value,
+        });
+        const newModels = [];
+        const newTypes = [];
+        const newCar = car_data.find((car) => car.brandName === e.target.value);
+        newCar.models.map((model) => {
+            newModels.push(model.modelType);
+        });
+        newCar.models[0].vehicles.map((vehicle) => {
+            newTypes.push(vehicle.vehicleName);
+        });
+        setType(newTypes);
+        setCarModels(newModels);
+    };
+
+    const handleModelChange = (e) => {
+        setBitItem({
+            ...bidItem,
+            itemModel: e.target.value,
+        });
+        const newTypes = [];
+        car_data
+            .find((car) => car.brandName === bidItem.itemBrand)
+            .models.find((model) => model.modelType === e.target.value)
+            .vehicles.map((vehichle) => newTypes.push(vehichle.vehicleName));
+        setType(newTypes);
+    };
 
     const handleChange = (e) => {
         const targetName = e.target.name;
@@ -71,17 +102,10 @@ const AddItemForm = () => {
                 });
                 break;
             case 'brand':
-                setBitItem({
-                    ...bidItem,
-                    itemBrand: e.target.value,
-                });
-                console.log(bidItem);
+                handleBrandChange(e);
                 break;
             case 'itemModel':
-                setBitItem({
-                    ...bidItem,
-                    itemModel: e.target.value,
-                });
+                handleModelChange(e);
                 break;
             case 'category':
                 setBitItem({
@@ -160,19 +184,19 @@ const AddItemForm = () => {
                     />
                 </FormControl>
                 <FormControl>
-                    <FormLabel fontWeight={600}>Brand:</FormLabel>
-                    <ItemSelectGroup
-                        groupArr={brands}
-                        handleChange={handleChange}
-                        name={'brand'}
-                    />
-                </FormControl>
-                <FormControl>
                     <FormLabel fontWeight={600}>Category:</FormLabel>
                     <ItemRadioGroup
                         groupArr={category}
                         handleChange={handleChange}
                         name={'category'}
+                    />
+                </FormControl>
+                <FormControl>
+                    <FormLabel fontWeight={600}>Brand:</FormLabel>
+                    <ItemSelectGroup
+                        groupArr={brands}
+                        handleChange={handleChange}
+                        name={'brand'}
                     />
                 </FormControl>
                 <FormControl>

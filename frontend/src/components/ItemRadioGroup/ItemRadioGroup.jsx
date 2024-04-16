@@ -5,10 +5,10 @@ const ItemRadioGroup = ({ groupArr, name, handleChange }) => {
     return (
         <RadioGroup defaultValue={groupArr[0]}>
             <HStack>
-                {groupArr.map((radioItem) => {
+                {groupArr.map((radioItem, index) => {
                     return (
                         <Radio
-                            key={radioItem}
+                            key={index}
                             value={radioItem}
                             name={name}
                             onChange={(e) => handleChange(e)}
