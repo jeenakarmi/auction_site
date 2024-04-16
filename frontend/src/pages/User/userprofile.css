@@ -70,7 +70,7 @@
 
 .delete-account-button-container {
   text-align: right; 
-  margin-top: 10px;
+  display: inline-block;
 }
 
 .delete-account-button {
@@ -84,6 +84,7 @@
   font-size: 1rem;
   display: inline-flex;
   align-items: center;
+  margin-right: -105px;
 }
 
 .delete-account-button:hover {
@@ -123,6 +124,27 @@
   align-items: center; 
   text-decoration: none; 
   color: #333; 
+}
+.link-container {
+  display: inline-block;
+}
+
+.profile-link {
+  text-decoration: none;
+  color: #6A994E; 
+  background-color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-right: 20px;
+  border: 2px solid #6A994E; 
+ 
+}
+
+.profile-link:hover {
+  background-color: #6A994E;  
+  border-color:  #6A994E;  
+  color: white;;
 }
 
 
