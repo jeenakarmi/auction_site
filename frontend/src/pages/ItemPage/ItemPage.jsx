@@ -38,7 +38,8 @@ import { useGlobalContext } from '../../context/GlobalContext';
 import axios from 'axios';
 
 const ItemPage = () => {
-    const { itemId } = useParams(); 
+    const {client} = useGlobalContext();
+    const { id } = useParams(); 
     const [itemData, setItemData] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -80,21 +81,22 @@ const ItemPage = () => {
     useEffect(() => {
         setLoading(true);
         // Fetch item data based on itemId
-        axios.get(`http://127.0.0.1:8000/api/items/${itemId}`)
+        client.get(`http://127.0.0.1:8000/api/items/${id}`)
             .then(response => {
                 setItemData(response.data);
+                console.log(response.data);
                 setLoading(false);
             })
             .catch(error => {
                 console.error('Error fetching item data:', error);
                 setLoading(false);
             });
-    }, [itemId]); // Re-fetch data when itemId changes
+    }, []); // Re-fetch data when itemId changes
 
     if (loading) {
         return <div>Loading...</div>;
     }
-    
+
     const RenderBidButton = () => {
         if (currentUser.userType === 'BUYER') {
             return (
