@@ -8,6 +8,13 @@ from rest_framework import permissions, status
 from .validations import custom_validation, validate_email, validate_password, validate_userType
 from .models import BidItem, AppUser
 
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
 class UserRegister(APIView):
     # anyone can register
     permission_classes = (permissions.AllowAny,)
@@ -100,7 +107,30 @@ class IndividualBidItemView(APIView):
         
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
+class SendEmailView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        data = json.loads(request.body)
+        name = data.get('name', '')
+        email = data.get('email', '')
+        message = data.get('message', '')
+
+        try:
+            # Send email
+            send_mail(
+                subject='New Contact Form Submission',
+                message=f'Name: {name}\nEmail: {email}\nMessage: {message}',
+                from_email='sujalkoju97@gmail.com',  # Replace with your email
+                recipient_list=['sujalkoju97@gmail.com'],  # Replace with your email address to receive form submissions
+            )
+            return JsonResponse({'success': True, 'message': 'Email sent successfully'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+
+    def get(self, request):
+        return JsonResponse({'success': False, 'message': 'Method not allowed'}, status=405)
 # view for placing bid by buyer
 class PlaceBidView(APIView):
     queryset = BidItem.objects.all()

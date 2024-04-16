@@ -11,5 +11,7 @@ urlpatterns = [
     path('item/create/', views.BidItemCreationView.as_view(), name='createbid'),
     path('items', views.AllBidItemView.as_view(), name='getallitems'),
     path('items/<int:pk>/', views.IndividualBidItemView.as_view(), name='getindividualitem'),
+    # send email
+    path('send-email/', views.SendEmailView.as_view(), name='send_email'),
     path('item/placebid/', views.PlaceBidView.as_view(), name='placebid')
 ]
