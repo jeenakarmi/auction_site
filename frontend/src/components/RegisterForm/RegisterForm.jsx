@@ -34,8 +34,8 @@ const RegisterForm = () => {
             client
                 .post('/api/register', values)
                 .then(() => {
-                    alert('Account Created!');
                     navigate('/login');
+                    alert('Account Created!');
                 })
                 .catch((err) => alert("Something's wrong! Try again later."));
         },
