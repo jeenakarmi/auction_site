@@ -32,7 +32,6 @@ const NavBar = () => {
     const { currentUser } = useGlobalContext();
 
     const RenderAddItemForm = () => {
-        console.log(currentUser);
         if (currentUser.userType === 'SELLER') {
             console.log('hello');
             return (

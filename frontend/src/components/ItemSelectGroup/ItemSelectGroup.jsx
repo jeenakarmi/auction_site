@@ -1,20 +1,16 @@
 import React from 'react';
 import { Select, HStack } from '@chakra-ui/react';
 
-const ItemSelectGroup = ({ groupArr, name, handleChange }) => {
+const ItemSelectGroup = ({ groupArr, name, handleChange, bidItem }) => {
     return (
         <Select
-            defaultValue={groupArr[0]}
             name={name}
+            value={bidItem[name]}
             onChange={(e) => handleChange(e)}
         >
-            {groupArr.map((selectOption) => {
+            {groupArr.map((selectOption, index) => {
                 return (
-                    <option
-                        key={selectOption}
-                        value={selectOption}
-                        className='my-10'
-                    >
+                    <option key={index} value={selectOption} className='my-10'>
                         {selectOption}
                     </option>
                 );

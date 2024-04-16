@@ -13,7 +13,11 @@ import Browse from './pages/Browse';
 import AboutUsPage from './pages/About/AboutUs';
 import ContactUsPage from './pages/Contactus/ContactUsPage';
 import AddItemForm from './components/AddItemForm/AddItemForm';
+
+import UserProfile from './pages/User/userprofile';
+
 import ItemPage from './pages/ItemPage/ItemPage';
+
 
 import Home from './pages/Home/Home';
 
@@ -36,6 +40,8 @@ const App = () => {
                 <Route path='/login' element={<LoginForm />} />
                 <Route path='/register' element={<RegisterForm />} />
                 <Route path='/add-item' element={<AddItemForm />} />
+                <Route path='/user' element={< UserProfile />} />
+                <Route path='/item/:id' element={<ItemPage />} />
             </Routes>
         </Stack>
     );
