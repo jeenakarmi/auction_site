@@ -1,5 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useGlobalContext } from '../../context/GlobalContext';
+import { MdDelete, MdKeyboardArrowLeft } from 'react-icons/md'; 
 import './userprofile.css'; 
 
 
@@ -7,6 +9,7 @@ const UserProfile = () => {
     const { currentUser } = useGlobalContext();
 
     return (
+        <div>
         <div className="user-profile">
             <h2>Personal and Account Information</h2>
             {currentUser ? (
@@ -53,10 +56,25 @@ const UserProfile = () => {
       </div>
       </div>
             <div className='separator'></div> */}
+      <div className="delete-account-button-container">
+                        <button className="delete-account-button">
+                            <MdDelete className="trash-icon" />
+                            <span className="delete-account-message">Delete Account</span>
+                        </button>
+                    </div>
                 </React.Fragment>
             ) : (
                 <div>Loading...</div>
             )}
+         </div>
+            
+               
+            <div className="go-back-button-container">
+                <Link to="/" className="go-back-link">
+                    <MdKeyboardArrowLeft className="arrow-icon" />
+                    <span>Go Back</span>
+                </Link>
+            </div>
         </div>
     );
 };
