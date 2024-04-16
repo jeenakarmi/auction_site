@@ -81,7 +81,7 @@ class AllBidItemView(APIView):
 
 # view to get individual bid item
 class IndividualBidItemView(APIView):
-    parser_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
     ##
     def get(self, request, pk):
         try:
