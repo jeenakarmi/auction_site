@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import { FaDollarSign, FaGavel } from 'react-icons/fa6';
+import { FaGavel } from 'react-icons/fa6';
 import { IoCaretBackSharp } from 'react-icons/io5';
 import { useParams } from 'react-router-dom';
 
@@ -51,9 +51,38 @@ const ItemPage = () => {
             bidAmount: '',
         },
         onSubmit: (values) => {
-            console.log(values);
+            placeBid(values);
         },
     });
+
+    const placeBid = (values) => {
+        const postData = {
+            ...values,
+            bidItemId: id,
+        };
+        const xsrfCookies = document.cookie
+            .split(';')
+            .map((c) => c.trim())
+            .filter((c) => c.startsWith('csrftoken='))[0]
+            .split('=')[1];
+        const config = {
+            headers: {
+                'X-CSRFToken': xsrfCookies,
+            },
+        };
+        client
+            .post(`/api/item/placebid/`, postData, config)
+            .then((res) => {
+                alert(`Bid placed of about Rs.${values.bidAmount}`);
+                formik.setValues({
+                    bidAmount: '',
+                });
+            })
+            .catch((err) => {
+                navigate(`/item/${values.bidItemId}`);
+                alert(`Something went wrong! Bid not placed!`);
+            });
+    };
 
     const { currentUser } = useGlobalContext();
 

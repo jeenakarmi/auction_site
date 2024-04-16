@@ -43,7 +43,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserPublicSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ('id', 'username')
+        fields = ('id', 'username', 'email', 'phone')
 
 # Bid Item serializer for item creation
 class BidItemCreationSerializer(serializers.ModelSerializer):
