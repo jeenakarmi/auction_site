@@ -92,3 +92,20 @@ class IndividualBidItemView(APIView):
         
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class HomeView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request):
+        bid_items = BidItem.objects.all()
+        serializer = BidItemSerializer(bid_items, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        # Validate the data using a custom validation function
+        clean_data = self.validate_bid_item_data(request.data)
+        serializer = BidItemSerializer(data=clean_data)
+        if serializer.is_valid(raise_exception=True):
+            bid_item = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

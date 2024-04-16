@@ -18,6 +18,8 @@ import { car_data } from '../../data/car_data.jsx';
 const Home = () => {
   const [auctions, setAuctions] = useState([]);
   const [filteredAuctions, setFilteredAuctions] = useState([]);
+  const [bidItems, setBidItems] = useState([]);
+  const [filteredBidItems, setFilteredBidItems] = useState([]);
   const [filterBy, setFilterBy] = useState('all');
   const [brandFilter, setBrandFilter] = useState('');
   const [priceFilter, setPriceFilter] = useState('');
@@ -30,6 +32,12 @@ const Home = () => {
       const data = await response.json();
       setAuctions(data);
       setFilteredAuctions(data);
+
+      // Fetch bid items from the database
+      const bidItemsResponse = await fetch('/api/bid-items');
+      const bidItemsData = await bidItemsResponse.json();
+      setBidItems(bidItemsData);
+      setFilteredBidItems(bidItemsData);
     };
     fetchAuctions();
   }, []);
@@ -53,6 +61,7 @@ const Home = () => {
         break;
     }
     filterAuctions();
+    filterBidItems();
   };
 
   const filterAuctions = () => {
@@ -66,6 +75,21 @@ const Home = () => {
       filtered = filtered.filter((auction) => auction.model.includes(modelFilter));
     }
     setFilteredAuctions(filtered);
+  };
+
+  const filterBidItems = () => {
+    let filtered = bidItems;
+    if (brandFilter) {
+      filtered = filtered.filter((item) => item.itemBrand.includes(brandFilter));
+    }
+    if (priceFilter) {
+      const [min, max] = priceFilter.split('-');
+      filtered = filtered.filter((item) => item.currentPrice >= parseFloat(min) && item.currentPrice <= parseFloat(max));
+    }
+    if (modelFilter) {
+      filtered = filtered.filter((item) => item.itemModel.includes(modelFilter));
+    }
+    setFilteredBidItems(filtered);
   };
 
   const getBrands = () => {
@@ -142,6 +166,15 @@ const Home = () => {
             <p>Price: ${auction.price}</p>
             <p>Model: {auction.model}</p>
             {/* Add more auction details as needed */}
+          </div>
+        ))}
+      </div>
+      <div className="bid-items-grid">
+        {filteredBidItems.map((item, index) => (
+          <div key={index} className="bid-item-card">
+            <img src={item.itemImage} alt={item.itemName} />
+            <h3>{item.itemName}</h3>
+            <p>Current Price: ${item.currentPrice}</p>
           </div>
         ))}
       </div>

@@ -4,6 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
+
+
 from .managers import AppUserManager
 
 class AppUser(AbstractBaseUser, PermissionsMixin):
@@ -56,8 +58,10 @@ class BidItem(models.Model):
     def __str__(self):
         return f"{self.itemName}\t{self.itemBrand}\t{self.itemModel}"
     
+    
 # make current price back to starting price if the bidder deletes their account
 @receiver(pre_delete, sender=AppUser)
 def user_pre_delete(sender, instance, **kwargs):
     # Update current Price of items associated wit the deleted user
     BidItem.objects.filter(seller=instance).update(currentPrice=models.F("startingPrice"))
+    
