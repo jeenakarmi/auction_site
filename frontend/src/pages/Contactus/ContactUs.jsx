@@ -1,70 +1,162 @@
-import React from 'react';
+// import { Link } from 'react-router-dom'; 
+// import './ContactUs.css'; 
+// import logo from './logo.png';
+// import React, { useState } from 'react';
+
+// const ContactUsPage = () => {
+//     const [formData, setFormData] = useState({
+//         name: '',
+//         email: '',
+//         message: ''
+//     });
+
+//     const handleChange = (e) => {
+//         setFormData({ ...formData, [e.target.name]: e.target.value });
+//     };
+
+//     const handleSubmit = (e) => {
+//         e.preventDefault();
+//         // Send form data to backend for email sending
+//         fetch('/send-email', {
+//             action: "https://formspree.io/f/myyrbrab",
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify(formData),
+//         })
+//         .then(response => {
+//             if (response.ok) {
+//                 console.log('Email sent successfully');
+//                 // Clear form fields after successful submission
+//                 setFormData({ name: '', email: '', message: '' });
+//             } else {
+//                 console.error('Error sending email');
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Error sending email:', error);
+//         });
+//     };
+// return (
+//     <div>
+//         <div className="company-card">
+//             <div className="logo-column">
+//                 <img src={logo} alt="Company Logo" className="company-logo" />              
+//             </div>
+//             <div className="description-column">
+//                 <h2>Contact Us</h2>
+//                 <form  onSubmit={handleSubmit}>
+//                     <div className='contact-info'>
+//                         <p>Name:</p>
+//                         <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+//                     </div>
+//                     <div className='contact-info'>
+//                         <p>Email:</p>
+//                         <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+//                     </div>
+//                     <div className='contact-info'>
+//                         <p>Message:</p>
+//                         <textarea name="message" value={formData.message} onChange={handleChange} required />
+//                     </div>
+//                     <button type="submit" className="submit-button">Submit</button>
+
+//                 </form>
+//                 <div className="company-info">
+//                     <h3>Our Contact Information</h3>
+//                     <p>Email: <a href="mailto:kadelsubekshya@gmail.com">kadelsubekshya@gmail.com</a></p>
+//                     <p>Phone: <a href="tel:+1234567890">+1 (234) 567-890</a></p>
+//                     {/* Add your company address, social media links, etc. here */}
+//                 </div>
+//                 <Link to="/" className="back-button">Back to home</Link>
+//             </div>
+//         </div>
+                    
+//     </div>
+// );
+// };
+// export default ContactUsPage;
+
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; 
-import './ContactUs.css'; 
+import './ContactUs.css';
 import logo from './logo.png';
 
-import { GoogleMap, LoadScript,Marker } from '@react-google-maps/api';
-
-const containerStyle = {
-  width: '100%',
-  height: '400px'
-};
-
-const center = {
-  lat: 27.671429,
-  lng: 85.439869
-};
-const markerPosition = {
-    lat: 27.671429, // Latitude coordinate for Khwopa College of Engineering, Bhaktapur, Nepal
-    lng: 85.439869 // Longitude coordinate for Khwopa College of Engineering, Bhaktapur, Nepal
-  };
-
 const ContactUsPage = () => {
-    const handleMarkerClick = () => {
-        // Open Google Maps with directions to the marker location
-        window.open(`https://www.google.com/maps/dir/?api=1&destination=${markerPosition.lat},${markerPosition.lng}`, '_blank');
-      };
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        message: ''
+    });
+    const [submitted, setSubmitted] = useState(false); // State variable to track form submission status
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('https://formspree.io/f/myyrbrab', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            if (response.ok) {
+                console.log('Email sent successfully');
+                setSubmitted(true); // Update state to indicate successful submission
+                setFormData({ name: '', email: '', message: '' }); // Clear form fields
+            } else {
+                console.error('Error sending email');
+            }
+        } catch (error) {
+            console.error('Error sending email:', error);
+        }
+    };
+
     return (
         <div>
             <div className="company-card">
                 <div className="logo-column">
-                    <img src={logo} alt="Company Logo" className="company-logo" />              
+                    <img src={logo} alt="Company Logo" className="company-logo" />
                 </div>
-                {/* <div className="contact-info">
-                    <h2>Contact Us</h2>
-                    // <p>Email: example@gmail.com</p>
-                    // <p>Phone: +1234567890</p>
-                </div> */}
                 <div className="description-column">
                     <h2>Contact Us</h2>
-                    {/* <p>Email: example@gmail.com</p>
-                    <p>Phone: +1234567890</p>                     */}
-                    <div className='contact-info'>
-                        <p>Email: <a href="mailto:autobids@gmail.com">autobids@gmail.com</a></p>
-                            <p>Phone: <a href="tel:+9774567890">+9774567890</a></p>
+                    {!submitted ? ( // Render the form if not submitted
+                        <form onSubmit={handleSubmit}>
+                            <div className='contact-info'>
+                                <p>Name:</p>
+                                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+                            </div>
+                            <div className='contact-info'>
+                                <p>Email:</p>
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                            </div>
+                            <div className='contact-info'>
+                                <p>Message:</p>
+                                <textarea name="message" value={formData.message} onChange={handleChange} required />
+                            </div>
+                            <button type="submit" className="submit-button">Submit</button>
+                        </form>
+                        ) : ( // Render success message if form submitted successfully
+                            <p className='FormSubmittedMessage'>Form Submitted!</p>
+                        )
+                    }
+                    <div className="company-info">
+                        <h3>Our Contact Information</h3>
+                        <p>Email: <a href="mailto:kadelsubekshya@gmail.com">kadelsubekshya@gmail.com</a></p>
+                        <p>Phone: <a href="tel:+1234567890">+1 (234) 567-890</a></p>
+                        {/* Add your company address, social media links, etc. here */}
+                        
                     </div>
-                    <div className="map">
-                        <LoadScript
-                        googleMapsApiKey="AIzaSyCgRumUAwCHamE-TuFSYY7BSOELkR6Bk98"
-                        >
-                        <GoogleMap
-                            mapContainerStyle={containerStyle}
-                            center={center}
-                            zoom={10}
-                        >
-                            { /* Child components, such as markers, info windows, etc. */
-                            <Marker position={markerPosition} />}
-                            <Marker
-                                position={markerPosition}
-                                onClick={handleMarkerClick} // Attach click event handler
-                />
-                        </GoogleMap>
-                        </LoadScript>
+                    <div>
+                        <Link to="/" className="back-button">Back to home</Link>`
                     </div>
-                    <Link to="/" className="back-button">Back to home</Link>
                 </div>
             </div>
-         </div>
+        </div>
     );
 };
 
