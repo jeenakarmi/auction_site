@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link as ReactRouterLink } from 'react-router-dom';
 import { FaRegCircleUser } from 'react-icons/fa6';
 import { BiLogOut } from 'react-icons/bi';
 import { IoSettingsOutline } from 'react-icons/io5';
@@ -11,6 +12,7 @@ import {
     MenuGroup,
     MenuDivider,
     IconButton,
+    Link as ChakraLink,
 } from '@chakra-ui/react';
 
 import { useGlobalContext } from '../../context/GlobalContext';
@@ -42,12 +44,20 @@ const LoggedInUserNavMenu = () => {
             />
             <MenuList>
                 <MenuGroup>
-                    <MenuItem
-                        icon={<FaRegCircleUser className='text-2xl' />}
-                        marginY={2}
+                    <ChakraLink
+                        as={ReactRouterLink}
+                        to={'/user'}
+                        _hover={{
+                            textDecoration: 'none',
+                        }}
                     >
-                        Profile
-                    </MenuItem>
+                        <MenuItem
+                            icon={<FaRegCircleUser className='text-2xl' />}
+                            marginY={2}
+                        >
+                            Profile
+                        </MenuItem>
+                    </ChakraLink>
                     <MenuItem
                         icon={<RiAuctionLine className='text-2xl' />}
                         marginY={2}
