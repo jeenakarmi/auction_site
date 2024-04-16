@@ -52,6 +52,7 @@ const GlobalProvider = ({ children }) => {
         formData.append('itemModel', data.itemModel);
         formData.append('itemCategory', data.itemCategory);
         formData.append('itemType', data.itemType);
+        formData.append('itemVariant', data.itemVariant);
         formData.append('isBrandNew', data.isBrandNew);
         if (!data.isBrandNew) {
             formData.append('usedPeriod', data.usedPeriod);
@@ -63,9 +64,9 @@ const GlobalProvider = ({ children }) => {
 
         client
             .post('http://127.0.0.1:8000/api/item/create/', formData, config)
-            .then((res) => console.log(res))
+            .then((res) => alert('Submitted!'))
             .catch((err) => {
-                console.log(err);
+                alert('Something went wrong! Please try again later.');
             });
     };
 
