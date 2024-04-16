@@ -21,7 +21,6 @@ const GlobalProvider = ({ children }) => {
             .get('/api/user')
             .then((res) => {
                 setCurrentUser(res.data.user);
-                console.log(res);
             })
             .catch((err) => {
                 console.log(err);

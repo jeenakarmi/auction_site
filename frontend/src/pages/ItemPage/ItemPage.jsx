@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import { FaDollarSign, FaGavel } from 'react-icons/fa6';
+import { FaGavel } from 'react-icons/fa6';
 import { IoCaretBackSharp } from 'react-icons/io5';
 import { useParams } from 'react-router-dom';
 
@@ -38,63 +38,85 @@ import { useGlobalContext } from '../../context/GlobalContext';
 import axios from 'axios';
 
 const ItemPage = () => {
-    const {client} = useGlobalContext();
-    const { id } = useParams(); 
+    const { client } = useGlobalContext();
+    const { id } = useParams();
     const [itemData, setItemData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [notFound, setNotFound] = useState(false);
+
+    const [bidder, setBidder] = useState('');
 
     const formik = useFormik({
         initialValues: {
             bidAmount: '',
         },
         onSubmit: (values) => {
-            console.log(values);
+            placeBid(values);
         },
     });
 
+    const placeBid = (values) => {
+        const postData = {
+            ...values,
+            bidItemId: id,
+        };
+        const xsrfCookies = document.cookie
+            .split(';')
+            .map((c) => c.trim())
+            .filter((c) => c.startsWith('csrftoken='))[0]
+            .split('=')[1];
+        const config = {
+            headers: {
+                'X-CSRFToken': xsrfCookies,
+            },
+        };
+        client
+            .post(`/api/item/placebid/`, postData, config)
+            .then((res) => {
+                alert(`Bid placed of about Rs.${values.bidAmount}`);
+                formik.setValues({
+                    bidAmount: '',
+                });
+            })
+            .catch((err) => {
+                navigate(`/item/${values.bidItemId}`);
+                alert(`Something went wrong! Bid not placed!`);
+            });
+    };
+
     const { currentUser } = useGlobalContext();
 
-    // const tempItem = {
-    //     id: 1,
-    //     itemName: 'Highlander',
-    //     itemBrand: 'Toyota',
-    //     itemModel: 'SUV',
-    //     itemCategory: 'Car',
-    //     itemType: 'L series',
-    //     isBrandNew: true,
-    //     usedPeriod: null,
-    //     itemDescription:
-    //         'Make the most out of a day with your crew in the stylish Highlander.',
-    //     itemImage: '/media/items/honda1.jpg',
-    //     startingPrice: '39270.00',
-    //     currentPrice: '39270.00',
-    //     isSold: false,
-    //     creationDate: '2024-04-13T08:59:09.280677Z',
-    //     lastUpdateDate: '2024-04-13T08:59:09.280677Z',
-    //     seller: 4,
-    //     bidder: null,
-    // };
-    // const tempBidder = {
-    //     username: 'jonathan',
-    // };
+    const getBidder = (bidderId) => {
+        client.get(`/api/getuser/${bidderId}`).then((res) => {
+            setBidder(res.data.seller.username);
+        });
+    };
 
     useEffect(() => {
         setLoading(true);
         // Fetch item data based on itemId
-        client.get(`http://127.0.0.1:8000/api/items/${id}`)
-            .then(response => {
+        client
+            .get(`/api/items/${id}`)
+            .then((response) => {
                 setItemData(response.data);
-                console.log(response.data);
+                // if there is a bidder
+                if (response.data.bidder) {
+                    getBidder(response.data.bidder);
+                }
                 setLoading(false);
             })
-            .catch(error => {
-                console.error('Error fetching item data:', error);
+            .catch((error) => {
+                if (error.response.status === 404) {
+                    setNotFound(true);
+                }
                 setLoading(false);
             });
     }, []); // Re-fetch data when itemId changes
 
     if (loading) {
         return <div>Loading...</div>;
+    } else if (notFound) {
+        return <div>Not found...</div>;
     }
 
     const RenderBidButton = () => {
@@ -148,10 +170,14 @@ const ItemPage = () => {
                 Go Back
             </ChakraLink>
             <Image
-                src={itemData ? `http://127.0.0.1:8000/${itemData?.itemImage}` : ''}
+                src={
+                    itemData
+                        ? `http://127.0.0.1:8000/${itemData.itemImage}`
+                        : ''
+                }
                 maxW={'50%'}
-        margin={'0 auto'}
-/>
+                margin={'0 auto'}
+            />
             <Stack
                 direction={'row'}
                 w={'100%'}
@@ -172,7 +198,7 @@ const ItemPage = () => {
                                         Name:
                                     </Td>
                                     <Td letterSpacing={1}>
-                                        {itemData?.itemName}
+                                        {itemData.itemName}
                                     </Td>
                                 </Tr>
                                 <Tr
@@ -183,7 +209,7 @@ const ItemPage = () => {
                                         Brand:
                                     </Td>
                                     <Td letterSpacing={1}>
-                                        {itemData?.itemBrand}
+                                        {itemData.itemBrand}
                                     </Td>
                                 </Tr>
                                 <Tr
@@ -194,9 +220,33 @@ const ItemPage = () => {
                                         Model:
                                     </Td>
                                     <Td letterSpacing={1}>
-                                        {itemData?.itemModel}
+                                        {itemData.itemModel}
                                     </Td>
                                 </Tr>
+                                <Tr
+                                    justifyContent={'space-between'}
+                                    width={'100%'}
+                                >
+                                    <Td fontWeight={600} letterSpacing={1}>
+                                        Type:
+                                    </Td>
+                                    <Td letterSpacing={1}>
+                                        {itemData.itemType}
+                                    </Td>
+                                </Tr>
+                                {itemData.itemVariant && (
+                                    <Tr
+                                        justifyContent={'space-between'}
+                                        width={'100%'}
+                                    >
+                                        <Td fontWeight={600} letterSpacing={1}>
+                                            Variant:
+                                        </Td>
+                                        <Td letterSpacing={1}>
+                                            {itemData.itemVariant}
+                                        </Td>
+                                    </Tr>
+                                )}
                                 <Tr
                                     justifyContent={'space-between'}
                                     width={'100%'}
@@ -205,7 +255,7 @@ const ItemPage = () => {
                                         Starting Price:
                                     </Td>
                                     <Td letterSpacing={1}>
-                                        Rs.{itemData?.startingPrice}
+                                        Rs.{itemData.startingPrice}
                                     </Td>
                                 </Tr>
                                 <Tr
@@ -216,13 +266,13 @@ const ItemPage = () => {
                                         Upload Date:
                                     </Td>
                                     <Td letterSpacing={1}>
-                                        {itemData?.creationDate.slice(0, 10)}
+                                        {itemData.creationDate.slice(0, 10)}
                                     </Td>
                                 </Tr>
                             </Tbody>
                         </Table>
                     </TableContainer>
-                    <Text letterSpacing={1}>{itemData?.itemDescription}</Text>
+                    <Text letterSpacing={1}>{itemData.itemDescription}</Text>
                 </Stack>
                 <Stack direction={'column'} width={'50%'}>
                     <HStack width={'100%'} justifyContent={'space-between'}>
@@ -231,14 +281,14 @@ const ItemPage = () => {
                             <Box
                                 width={4}
                                 height={4}
-                                bgColor={itemData?.isSold ? 'none' : 'green'}
+                                bgColor={itemData.isSold ? 'none' : 'green'}
                                 rounded={'full'}
                                 border={
-                                    itemData?.isSold ? '2px solid green' : 'none'
+                                    itemData.isSold ? '2px solid green' : 'none'
                                 }
                             ></Box>
                             <Text fontWeight={600} fontSize={'sm'}>
-                                {itemData?.isSold ? 'Sold' : 'Ongoing'}
+                                {itemData.isSold ? 'Sold' : 'Ongoing'}
                             </Text>
                         </HStack>
                     </HStack>
@@ -250,11 +300,11 @@ const ItemPage = () => {
                                     width={'100%'}
                                 >
                                     <Td fontWeight={600} letterSpacing={1}>
-                                        Username:
+                                        Bidder:
                                     </Td>
-                                    {/* <Td letterSpacing={1}>
-                                        {tempBidder.username}
-                                    </Td> */}
+                                    <Td letterSpacing={1}>
+                                        {bidder ? bidder : '-'}
+                                    </Td>
                                 </Tr>
                                 <Tr
                                     justifyContent={'space-between'}
@@ -264,7 +314,7 @@ const ItemPage = () => {
                                         Latest Price:
                                     </Td>
                                     <Td letterSpacing={1}>
-                                        Rs.{itemData?.currentPrice}
+                                        Rs.{itemData.currentPrice}
                                     </Td>
                                 </Tr>
                             </Tbody>

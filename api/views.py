@@ -3,10 +3,10 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
-from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, BidItemCreationSerializer, BidItemSerializer
+from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, UserPublicSerializer, BidItemCreationSerializer, BidItemSerializer
 from rest_framework import permissions, status
 from .validations import custom_validation, validate_email, validate_password, validate_userType
-from .models import BidItem
+from .models import BidItem, AppUser
 
 class UserRegister(APIView):
     # anyone can register
@@ -55,6 +55,14 @@ class UserView(APIView):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
     
+class UserPublicView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    ##
+    def get(self,request, pk):
+        user = AppUser.objects.get(pk = pk)
+        serializer = UserPublicSerializer(user)
+        return Response({'seller': serializer.data}, status=status.HTTP_200_OK)
+
 # view for bit item creation
 class BidItemCreationView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -90,5 +98,23 @@ class IndividualBidItemView(APIView):
         except BidItem.DoesNotExist:
             return Response({'error': 'Bid item does not exist!'}, status=status.HTTP_404_NOT_FOUND)
         
+        serializer = BidItemSerializer(bid_item)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+# view for placing bid by buyer
+class PlaceBidView(APIView):
+    queryset = BidItem.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        bid_item = BidItem.objects.get(pk=request.data.get("bidItemId"))
+        ## if bid about is not greater that current price
+        bid_amount = request.data.get("bidAmount")
+        if (float(bid_amount) <= float(bid_item.currentPrice)):
+            return Response({"error": "Bid amount should be greater that current price!"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        bid_item.currentPrice = bid_amount
+        bid_item.bidder = request.user
+        bid_item.save()
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
