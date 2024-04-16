@@ -12,6 +12,8 @@ import {
     HStack,
     Textarea,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+
 import ItemRadioGroup from '../ItemRadioGroup/ItemRadioGroup';
 import ItemSelectGroup from '../ItemSelectGroup/ItemSelectGroup';
 import { useGlobalContext } from '../../context/GlobalContext';
@@ -21,14 +23,17 @@ import { car_data } from '../../data/car_data';
 
 const AddItemForm = () => {
     const { postNewItem } = useGlobalContext();
+    const navigate = useNavigate();
 
     const [brands, setBrands] = useState([]);
     const [carModels, setCarModels] = useState([]);
     const [type, setType] = useState([]);
+    const [variants, setVariants] = useState([]);
 
     useEffect(() => {
         let newBrands = [];
         let newCarModels = [];
+        let newTypes = [];
         let newVariants = [];
         car_data.map((car) => {
             newBrands.push(car.brandName);
@@ -37,11 +42,17 @@ const AddItemForm = () => {
             newCarModels.push(model.modelType);
         });
         car_data[0].models[0].vehicles.map((vehicle) => {
-            newVariants.push(vehicle.vehicleName);
+            newTypes.push(vehicle.vehicleName);
         });
+        const tempVariantArr = car_data[0].models[0].vehicles[0].variant;
+        if (tempVariantArr && tempVariantArr.length > 0) {
+            newVariants = tempVariantArr;
+        }
+
         setBrands(newBrands);
         setCarModels(newCarModels);
-        setType(newVariants);
+        setType(newTypes);
+        setVariants(newVariants);
     }, []);
 
     // category (bike or cars)
@@ -54,6 +65,7 @@ const AddItemForm = () => {
         itemModel: car_data[0].models[0].modelType,
         itemCategory: category[0],
         itemType: car_data[0].models[0].vehicles[0].vehicleName,
+        itemVariant: '',
         isBrandNew: true,
         usedPeriod: 0,
         itemDescription: '',
@@ -62,12 +74,9 @@ const AddItemForm = () => {
     });
 
     const handleBrandChange = (e) => {
-        setBitItem({
-            ...bidItem,
-            itemBrand: e.target.value,
-        });
         const newModels = [];
         const newTypes = [];
+        let newVariants = [];
         const newCar = car_data.find((car) => car.brandName === e.target.value);
         newCar.models.map((model) => {
             newModels.push(model.modelType);
@@ -75,8 +84,21 @@ const AddItemForm = () => {
         newCar.models[0].vehicles.map((vehicle) => {
             newTypes.push(vehicle.vehicleName);
         });
+        const tempVariantArr = newCar.models[0].vehicles[0].variant;
+        if (tempVariantArr && tempVariantArr.length > 0) {
+            newVariants = tempVariantArr;
+        }
         setType(newTypes);
         setCarModels(newModels);
+        setVariants(newVariants);
+        setBitItem({
+            ...bidItem,
+            itemBrand: e.target.value,
+            itemModel: newModels[0],
+            itemType: newTypes[0],
+            itemVariant: newVariants.length > 0 ? newVariants[0] : '',
+        });
+        console.log(bidItem);
     };
 
     const handleModelChange = (e) => {
@@ -85,11 +107,44 @@ const AddItemForm = () => {
             itemModel: e.target.value,
         });
         const newTypes = [];
-        car_data
+        let newVariants = [];
+        const currentVehicleArr = car_data
             .find((car) => car.brandName === bidItem.itemBrand)
-            .models.find((model) => model.modelType === e.target.value)
-            .vehicles.map((vehichle) => newTypes.push(vehichle.vehicleName));
+            .models.find(
+                (model) => model.modelType === e.target.value
+            ).vehicles;
+
+        currentVehicleArr.map((vehichle) =>
+            newTypes.push(vehichle.vehicleName)
+        );
+
+        const tempVariantArr = currentVehicleArr[0].variant;
+        if (tempVariantArr && tempVariantArr.length > 0) {
+            newVariants = tempVariantArr;
+        }
+
         setType(newTypes);
+        setVariants(newVariants);
+    };
+
+    const handleTypeChange = (e) => {
+        const currentType = car_data
+            .find((car) => car.brandName === bidItem.itemBrand)
+            .models.find((model) => model.modelType === bidItem.itemModel)
+            .vehicles.find(
+                (vehichle) => vehichle.vehicleName === e.target.value
+            );
+        let newVariant = [];
+        if (currentType.variant) {
+            newVariant = currentType.variant;
+        }
+
+        setBitItem({
+            ...bidItem,
+            itemType: e.target.value,
+            itemVariant: newVariant.length > 0 ? newVariant[0] : '',
+        });
+        setVariants(newVariant);
     };
 
     const handleChange = (e) => {
@@ -101,22 +156,25 @@ const AddItemForm = () => {
                     itemName: e.target.value,
                 });
                 break;
-            case 'brand':
-                handleBrandChange(e);
-                break;
-            case 'itemModel':
-                handleModelChange(e);
-                break;
             case 'category':
                 setBitItem({
                     ...bidItem,
                     itemCategory: e.target.value,
                 });
                 break;
+            case 'brand':
+                handleBrandChange(e);
+                break;
+            case 'itemModel':
+                handleModelChange(e);
+                break;
             case 'itemType':
+                handleTypeChange(e);
+                break;
+            case 'itemVariant':
                 setBitItem({
                     ...bidItem,
-                    itemType: e.target.value,
+                    itemVariant: e.target.value,
                 });
                 break;
             case 'isBrandNew':
@@ -156,7 +214,7 @@ const AddItemForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(bidItem);
+        navigate('/');
         postNewItem(bidItem);
     };
 
@@ -197,6 +255,7 @@ const AddItemForm = () => {
                         groupArr={brands}
                         handleChange={handleChange}
                         name={'brand'}
+                        bidItem={bidItem}
                     />
                 </FormControl>
                 <FormControl>
@@ -205,6 +264,7 @@ const AddItemForm = () => {
                         groupArr={carModels}
                         handleChange={handleChange}
                         name={'itemModel'}
+                        bidItem={bidItem}
                     />
                 </FormControl>
                 <FormControl>
@@ -213,8 +273,20 @@ const AddItemForm = () => {
                         name='itemType'
                         groupArr={type}
                         handleChange={handleChange}
+                        bidItem={bidItem}
                     />
                 </FormControl>
+                {variants.length > 0 && (
+                    <FormControl>
+                        <FormLabel fontWeight={600}>Variant:</FormLabel>
+                        <ItemSelectGroup
+                            name='itemVariant'
+                            groupArr={variants}
+                            handleChange={handleChange}
+                            bidItem={bidItem}
+                        />
+                    </FormControl>
+                )}
                 <FormControl>
                     <FormLabel fontWeight={600}>Brand New:</FormLabel>
                     <ItemRadioGroup

@@ -63,9 +63,9 @@ const GlobalProvider = ({ children }) => {
 
         client
             .post('http://127.0.0.1:8000/api/item/create/', formData, config)
-            .then((res) => console.log(res))
+            .then((res) => alert('Submitted!'))
             .catch((err) => {
-                console.log(err);
+                alert('Something went wrong! Please try again later.');
             });
     };
 
