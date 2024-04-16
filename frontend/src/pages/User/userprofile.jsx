@@ -55,13 +55,25 @@ const UserProfile = () => {
       </div>
       </div>
             <div className='separator'></div> */}
-                        <div className='delete-account-button-container'>
-                            <button className='delete-account-button'>
-                                <MdDelete className='trash-icon' />
-                                <span className='delete-account-message'>
-                                    Delete Account
-                                </span>
-                            </button>
+                         <div className='actions-container'>
+                            <div className='link-container'>
+                                <Link to='/purchased-bids' className='profile-link'>
+                                    Purchased Bids
+                                </Link>
+                            </div>
+                            <div className='link-container'>
+                                <Link to='/placed-bids' className='profile-link'>
+                                    Placed Bids
+                                </Link>
+                            </div>
+                            <div className='delete-account-button-container'>
+                                <button className='delete-account-button'>
+                                    <MdDelete className='trash-icon' />
+                                    <span className='delete-account-message'>
+                                        Delete Account
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     </>
                 ) : (
