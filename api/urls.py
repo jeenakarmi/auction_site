@@ -19,5 +19,5 @@ urlpatterns = [
     path('items/placed-top-bids', views.PlacedTopBidsView.as_view(), name='placedtopbids'),
     path('items/seller-active-lots', views.SellerActiveLotsView.as_view(), name='selleractivelots'),
     path('item/close-auction', views.CloseAuctionView.as_view(), name='closeauction'),
-    path('item/delete/<int:pk>/', views.DeleteBidItem.as_view(), name='deleteitem')
+    path('item/delete/<int:pk>/', views.DeleteBidItem.as_view(), name='deleteitem'),
 ]
