@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, UserPublicSerializer, BidItemCreationSerializer, BidItemSerializer
-from rest_framework import permissions, status
+from rest_framework import generics, permissions, status
 from .validations import custom_validation, validate_email, validate_password, validate_userType
 from .models import BidItem, AppUser
 
@@ -95,6 +95,13 @@ class AllBidItemView(APIView):
         bid_items = BidItem.objects.all()
         serialzer = BidItemSerializer(bid_items, many=True)
         return Response({'bidLots': serialzer.data}, status=status.HTTP_200_OK)
+# class AllBidItemsView(APIView):
+#     permission_classes = (permissions.AllowAny,)
+
+#     def get(self, request):
+#         bid_items = BidItem.objects.all()
+#         serializer = BidItemSerializer(bid_items, many=True)
+#         return Response({'bidLots': serializer.data}, status=status.HTTP_200_OK)
 
 # view to get individual bid item
 class IndividualBidItemView(APIView):
@@ -151,6 +158,10 @@ class PlaceBidView(APIView):
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# class AllBidItemsView(generics.ListAPIView):
+#     queryset = BidItem.objects.all()
+#     serializer_class = BidItemSerializer
+#     permission_classes = (permissions.AllowAny,)
 # view to get items that top bidder is the user
 class PlacedTopBidsView(APIView):
     permission_classes = (permissions.IsAuthenticated,)

@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
+
 # have to add path of media to media url
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
