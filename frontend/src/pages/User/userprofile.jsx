@@ -130,10 +130,10 @@ const UserProfile = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <div>
-                        <button onClick={handleCancelDelete}>Cancel</button>
-                        <button onClick={handleDeleteAccount}>Delete</button>
-                    </div>
+                   <div className='confirmation-buttons-container'>
+    <button onClick={handleCancelDelete}>Cancel</button>
+    <button onClick={handleDeleteAccount}>Delete</button>
+  </div>
                 </div>
             )}
 

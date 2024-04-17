@@ -167,3 +167,52 @@
   left: -60px;
   transform: rotate(45deg);
 }
+
+.confirmation-modal {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 50px;
+  margin-left: 30px;
+}
+
+.confirmation-modal p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.confirmation-modal input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.confirmation-buttons-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirmation-buttons-container button {
+  background-color: #eb0d0d;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.confirmation-buttons-container button:hover {
+  background-color: #d72323;
+}
+
+.confirmation-buttons-container button + button {
+  margin-left: 10px;
+}
