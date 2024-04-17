@@ -7,6 +7,40 @@ import './userprofile.css';
 const UserProfile = () => {
     const { currentUser } = useGlobalContext();
 
+    const RenderBidsPageButtons = () => {
+        if (currentUser.userType === 'BUYER') {
+            return (
+                <>
+                    <div className='link-container'>
+                        <Link to='/purchased-bids' className='profile-link'>
+                            Purchased Bids
+                        </Link>
+                    </div>
+                    <div className='link-container'>
+                        <Link to='/placed-top-bids' className='profile-link'>
+                            Placed Top Bids
+                        </Link>
+                    </div>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <div className='link-container'>
+                        <Link to='/sold-lots' className='profile-link'>
+                            Sold Lots
+                        </Link>
+                    </div>
+                    <div className='link-container'>
+                        <Link to='/my-active-lots' className='profile-link'>
+                            Active Bids
+                        </Link>
+                    </div>
+                </>
+            );
+        }
+    };
+
     return (
         <div>
             <div className='user-profile'>
@@ -55,13 +89,16 @@ const UserProfile = () => {
       </div>
       </div>
             <div className='separator'></div> */}
-                        <div className='delete-account-button-container'>
-                            <button className='delete-account-button'>
-                                <MdDelete className='trash-icon' />
-                                <span className='delete-account-message'>
-                                    Delete Account
-                                </span>
-                            </button>
+                        <div className='actions-container'>
+                            {currentUser && RenderBidsPageButtons()}
+                            <div className='delete-account-button-container'>
+                                <button className='delete-account-button'>
+                                    <MdDelete className='trash-icon' />
+                                    <span className='delete-account-message'>
+                                        Delete Account
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     </>
                 ) : (

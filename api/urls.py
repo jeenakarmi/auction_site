@@ -13,5 +13,7 @@ urlpatterns = [
     path('items/<int:pk>/', views.IndividualBidItemView.as_view(), name='getindividualitem'),
     path('send-email/', views.SendEmailView.as_view(), name='send_email'),
     path('item/placebid/', views.PlaceBidView.as_view(), name='placebid'),
-
-]
+    path('items/placed-top-bids', views.PlacedTopBidsView.as_view(), name='placedtopbids'),
+    path('items/seller-active-lots', views.SellerActiveLotsView.as_view(), name='selleractivelots'),
+    path('item/close-auction', views.CloseAuctionView.as_view(), name='closeauction'),
+    path('item/delete/<int:pk>/', views.DeleteBidItem.as_view(), name='deleteitem')
