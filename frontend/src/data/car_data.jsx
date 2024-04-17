@@ -30,7 +30,7 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'pickup',
+                modelType: 'Pickup Truck',
                 vehicles: [
                     {
                         vehicleName: 'Ace',
@@ -41,19 +41,24 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'Electric Vehicle',
+                modelType: 'Hybrid SUV',
                 vehicles: [
                     {
-                        vehicleName: 'Corolla Cross hybrid electric',
+                    vehicleName: 'Corolla Cross hybrid electric',
                     },
                     {
-                        vehicleName: 'Camry hybrid electric',
-                    },
-                    {
-                        vehicleName: 'RAV4 hybrid electric',
-                    },
-                ],
+                    vehicleName: 'RAV4 hybrid electric',
+                    }
+                ]
             },
+            {
+                modelType: 'Hybrid Sedan',
+                vehicles: [
+                    {
+                    vehicleName: 'Camry hybrid electric',
+                    }
+                ]
+            }
         ],
     },
 
@@ -87,7 +92,7 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'Hatchbacks',
+                modelType: 'Hatchback',
                 vehicles: [
                     {
                         vehicleName: 'Grand i10',
@@ -98,7 +103,7 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'MPVs',
+                modelType: 'MPV',
                 vehicles: [
                     {
                         vehicleName: 'Stargazer',
@@ -106,7 +111,7 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'Pickup',
+                modelType: 'Pickup Truck',
                 vehicles: [
                     {
                         vehicleName: 'Santa Cruz',
@@ -147,7 +152,7 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'Pickup',
+                modelType: 'Pickup Truck',
                 vehicles: [
                     {
                         vehicleName: 'Bolero Pickup',
@@ -202,7 +207,7 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'MPv',
+                modelType: 'MPV',
                 vehicles: [
                     {
                         vehicleName: 'Indica',
@@ -215,7 +220,7 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'Pickup',
+                modelType: 'Pickup Truck',
                 vehicles: [
                     {
                         vehicleName: 'Intra',
@@ -240,17 +245,12 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'Pickup',
+                modelType: 'Pickup Truck',
                 vehicles: [
                     {
                         vehicleName: 'Outlander',
                         variant: ['2WD', '4WD'],
                     },
-                ],
-            },
-            {
-                modelType: 'Triton',
-                vehicles: [
                     {
                         vehicleName: 'Triton',
                         variant: [
@@ -311,7 +311,20 @@ export const car_data = [
         brandName: 'Tesla',
         models: [
             {
-                modelType: 'Electric Vehicle',
+                modelType: 'SUV',
+                vehicles: [
+                    {
+                        vehicleName: 'Model X',
+                        variant: ['Long Range', 'Plaid'],
+                    },
+                    {
+                        vehicleName: 'Model Y',
+                        variant: ['Long Range', 'Performance'],
+                    },
+                ],
+            },
+            {
+                modelType: 'Sedan',
                 vehicles: [
                     {
                         vehicleName: 'Model S',
@@ -325,13 +338,27 @@ export const car_data = [
                             'Performance',
                         ],
                     },
+                ],
+            },
+            {
+                modelType: 'Pickup Truck',
+                vehicles: [
                     {
-                        vehicleName: 'Model X',
-                        variant: ['Long Range', 'Plaid'],
+                        vehicleName: 'CyberPickup Truck',
+                        variant: [' '],
                     },
                     {
-                        vehicleName: 'Model Y',
-                        variant: ['Long Range', 'Performance'],
+                        vehicleName: 'Semi-Pickup Truck',
+                        variant: [],
+                    },
+                ],
+            },
+            {
+                modelType: 'Sport',
+                vehicles: [
+                    {
+                        vehicleName: 'Roadster',
+                        variant: [],
                     },
                 ],
             },
@@ -356,7 +383,7 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'Pickup',
+                modelType: 'Pickup Truck',
                 vehicles: [
                     {
                         vehicleName: 'Ranger',
@@ -498,7 +525,7 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'Pickups',
+                modelType: 'Pickup Truck',
                 vehicles: [
                     {
                         vehicleName: 'Navara',
@@ -513,7 +540,7 @@ export const car_data = [
                 ],
             },
             {
-                modelType: 'Electric Vehicles',
+                modelType: 'Electric Vehicle',
                 vehicles: [
                     { vehicleName: 'Leaf' }, // No variants provided for Leaf
                 ],

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, UserPublicSerializer, BidItemCreationSerializer, BidItemSerializer
-from rest_framework import permissions, status
+from rest_framework import generics, permissions, status
 from .validations import custom_validation, validate_email, validate_password, validate_userType
 from .serializers import UserDeleteSerializer
 from .models import BidItem, AppUser
@@ -110,6 +110,13 @@ class AllBidItemView(APIView):
         bid_items = BidItem.objects.all()
         serialzer = BidItemSerializer(bid_items, many=True)
         return Response({'bidLots': serialzer.data}, status=status.HTTP_200_OK)
+# class AllBidItemsView(APIView):
+#     permission_classes = (permissions.AllowAny,)
+
+#     def get(self, request):
+#         bid_items = BidItem.objects.all()
+#         serializer = BidItemSerializer(bid_items, many=True)
+#         return Response({'bidLots': serializer.data}, status=status.HTTP_200_OK)
 
 # view to get individual bid item
 class IndividualBidItemView(APIView):
@@ -208,5 +215,17 @@ class DeleteBidItem(APIView):
             return Response({"error": "Bid Item does not exist"}, status=status.HTTP_400_BAD_REQUEST)
         os.remove(os.path.join(settings.MEDIA_ROOT, bid_item.itemImage.path))
         bid_item.delete()
+        serializer = BidItemSerializer(bid_item)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+      
+class PaymentReceivedView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    ##
+    def post(self, request):
+        bid_item = BidItem.objects.get(pk=request.data.get("bidItemId"))
+        if (bid_item.bidder is None):
+            return Response({'error': 'No bidder yet!'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        bid_item.isPendingPayment = False
+        bid_item.save()
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -4,6 +4,8 @@ import { FaRegCircleUser } from 'react-icons/fa6';
 import { BiLogOut } from 'react-icons/bi';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { RiAuctionLine } from 'react-icons/ri';
+import { GiReceiveMoney } from 'react-icons/gi';
+import { MdPublic, MdOutlinePending } from 'react-icons/md';
 import {
     Menu,
     MenuButton,
@@ -18,18 +20,53 @@ import {
 import { useGlobalContext } from '../../context/GlobalContext';
 
 const LoggedInUserNavMenu = () => {
-    const { client, setCurrentUser, setRegistrationToggle } =
+    const { client, setCurrentUser, setRegistrationToggle, currentUser } =
         useGlobalContext();
 
     const handleLogout = () => {
         client
-            .post('/api/logout', { withCredentials: true })
+            .post('/api/logout/', { withCredentials: true })
             .then((res) => {
                 setCurrentUser(null);
                 setRegistrationToggle(false);
             })
             .catch((err) => console.log(err));
     };
+
+    const sellerPages = [
+        {
+            name: 'Active Lots',
+            link: '/my-active-lots',
+            icon: <MdPublic className='text-2xl' />,
+        },
+        {
+            name: 'Pending Lots',
+            link: '/pending-receive-payment-bids',
+            icon: <GiReceiveMoney className='text-2xl' />,
+        },
+        {
+            name: 'Sold Lots',
+            link: '/sold-lots',
+            icon: <RiAuctionLine className='text-2xl' />,
+        },
+    ];
+    const buyerPages = [
+        {
+            name: 'Placed Top Bids',
+            link: '/placed-top-bids',
+            icon: <MdPublic className='text-2xl' />,
+        },
+        {
+            name: 'Pending Payments',
+            link: '/pending-make-payment-bids',
+            icon: <GiReceiveMoney className='text-2xl' />,
+        },
+        {
+            name: 'Purchased Lots',
+            link: '/purchased-bids',
+            icon: <RiAuctionLine className='text-2xl' />,
+        },
+    ];
 
     return (
         <Menu>
@@ -58,18 +95,25 @@ const LoggedInUserNavMenu = () => {
                             Profile
                         </MenuItem>
                     </ChakraLink>
-                    <MenuItem
-                        icon={<RiAuctionLine className='text-2xl' />}
-                        marginY={2}
-                    >
-                        Bids
-                    </MenuItem>
-                    <MenuItem
-                        icon={<IoSettingsOutline className='text-2xl' />}
-                        marginY={2}
-                    >
-                        Settings
-                    </MenuItem>
+                    {(currentUser.userType === 'SELLER'
+                        ? sellerPages
+                        : buyerPages
+                    ).map((page, index) => {
+                        return (
+                            <ChakraLink
+                                key={index}
+                                as={ReactRouterLink}
+                                to={page.link}
+                                _hover={{
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                <MenuItem icon={page.icon} marginY={2}>
+                                    {page.name}
+                                </MenuItem>
+                            </ChakraLink>
+                        );
+                    })}
                 </MenuGroup>
                 <MenuDivider />
                 <MenuGroup>
