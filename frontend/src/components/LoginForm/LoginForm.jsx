@@ -30,6 +30,7 @@ const LoginForm = () => {
             userType: 'BUYER',
         },
         onSubmit: (values) => {
+            console.log(values);
             client
                 .post('/api/login/', values)
                 .then((res) => {
