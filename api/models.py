@@ -34,6 +34,7 @@ class BidItem(models.Model):
     itemModel = models.CharField(max_length=100)
     itemCategory = models.CharField(max_length=50) # motorbike, car, etc
     itemType = models.CharField(max_length=50) # naked, sport, etc
+    itemVariant = models.CharField(max_length=50, null=True, blank=True)
 
     isBrandNew = models.BooleanField()
     usedPeriod = models.IntegerField(null=True, blank=True)

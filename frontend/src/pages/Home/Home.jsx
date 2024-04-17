@@ -1,46 +1,47 @@
-// import React from 'react';
-
-// import { Box, Heading } from '@chakra-ui/react';
-// const Home = () => {
-//     return (
-//         <Box>
-//             <Heading size={'xl'}>Home Page</Heading>
-//         </Box>
-//     );
-// };
-
-// export default Home;
-
 import React, { useState, useEffect } from 'react';
-import './Home.css';
+import { useGlobalContext } from '../../context/GlobalContext';
+import { Link } from 'react-router-dom';
 import { car_data } from '../../data/car_data.jsx';
+import './Home.css';
+
 
 const Home = () => {
-  const [auctions, setAuctions] = useState([]);
-  const [filteredAuctions, setFilteredAuctions] = useState([]);
+  const { client } = useGlobalContext();
   const [bidItems, setBidItems] = useState([]);
   const [filteredBidItems, setFilteredBidItems] = useState([]);
   const [filterBy, setFilterBy] = useState('all');
   const [brandFilter, setBrandFilter] = useState('');
   const [priceFilter, setPriceFilter] = useState('');
   const [modelFilter, setModelFilter] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch auction data from an API or your data source
-    const fetchAuctions = async () => {
-      const response = await fetch('/api/auctions');
-      const data = await response.json();
-      setAuctions(data);
-      setFilteredAuctions(data);
+    setLoading(true);
+    fetchBidItems();
+  }, [filterBy, brandFilter, priceFilter, modelFilter]);
 
-      // Fetch bid items from the database
-      const bidItemsResponse = await fetch('/api/bid-items');
-      const bidItemsData = await bidItemsResponse.json();
-      setBidItems(bidItemsData);
-      setFilteredBidItems(bidItemsData);
-    };
-    fetchAuctions();
-  }, []);
+  const fetchBidItems = async () => {
+    try {
+      const response = await client.get('/api/items/');
+      let filtered = response.data.bidLots;
+
+      if (filterBy === 'brand') {
+        filtered = filtered.filter((item) => item.itemBrand.includes(brandFilter));
+      } else if (filterBy === 'price') {
+        const [min, max] = priceFilter.split('-');
+        filtered = filtered.filter((item) => item.currentPrice >= parseFloat(min) && item.currentPrice <= parseFloat(max));
+      } else if (filterBy === 'model') {
+        filtered = filtered.filter((item) => item.itemModel.includes(modelFilter));
+      }
+
+      setBidItems(response.data.bidLots);
+      setFilteredBidItems(filtered);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching bid items:', error);
+      setLoading(false);
+    }
+  };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -60,48 +61,18 @@ const Home = () => {
       default:
         break;
     }
-    filterAuctions();
-    filterBidItems();
-  };
-
-  const filterAuctions = () => {
-    let filtered = auctions;
-    if (filterBy === 'brand') {
-      filtered = filtered.filter((auction) => auction.brand.includes(brandFilter));
-    } else if (filterBy === 'price') {
-      const [min, max] = priceFilter.split('-');
-      filtered = filtered.filter((auction) => auction.price >= parseFloat(min) && auction.price <= parseFloat(max));
-    } else if (filterBy === 'model') {
-      filtered = filtered.filter((auction) => auction.model.includes(modelFilter));
-    }
-    setFilteredAuctions(filtered);
-  };
-
-  const filterBidItems = () => {
-    let filtered = bidItems;
-    if (brandFilter) {
-      filtered = filtered.filter((item) => item.itemBrand.includes(brandFilter));
-    }
-    if (priceFilter) {
-      const [min, max] = priceFilter.split('-');
-      filtered = filtered.filter((item) => item.currentPrice >= parseFloat(min) && item.currentPrice <= parseFloat(max));
-    }
-    if (modelFilter) {
-      filtered = filtered.filter((item) => item.itemModel.includes(modelFilter));
-    }
-    setFilteredBidItems(filtered);
   };
 
   const getBrands = () => {
-    return ['All', ...new Set(car_data.flatMap((brand) => brand.brandName))];
+    return ['All', ...new Set(car_data.map((brand) => brand.brandName))];
   };
 
   const getModels = () => {
     if (brandFilter === 'All' || !brandFilter) {
-      return ['All', ...car_data.flatMap((brand) => brand.models.flatMap((model) => model.modelType))];
+      return ['All', ...car_data.flatMap((brand) => brand.models.map((model) => model.modelType))];
     }
     const brand = car_data.find((b) => b.brandName === brandFilter);
-    return ['All', ...brand.models.flatMap((model) => model.modelType)];
+    return ['All', ...brand.models.map((model) => model.modelType)];
   };
 
   const getPriceOptions = () => {
@@ -114,19 +85,23 @@ const Home = () => {
     ];
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="home-container">
+    <div>
       <div className="filters">
-        <div className="filter-item">
+        <div>
           <label htmlFor="filterBy">Filter By:</label>
           <select id="filterBy" name="filterBy" value={filterBy} onChange={handleFilterChange}>
             <option value="all">All</option>
-            {/* <option value="brand">Brand</option>
+            <option value="brand">Brand</option>
             <option value="price">Price</option>
-            <option value="model">Model</option> */}
+            <option value="model">Model</option>
           </select>
         </div>
-        <div className="filter-item">
+        <div>
           <label htmlFor="brand">Brand:</label>
           <select id="brand" name="brand" value={brandFilter} onChange={handleFilterChange}>
             {getBrands().map((brand) => (
@@ -136,7 +111,7 @@ const Home = () => {
             ))}
           </select>
         </div>
-        <div className="filter-item">
+        <div>
           <label htmlFor="price">Price:</label>
           <select id="price" name="price" value={priceFilter} onChange={handleFilterChange}>
             {getPriceOptions().map((price) => (
@@ -146,7 +121,7 @@ const Home = () => {
             ))}
           </select>
         </div>
-        <div className="filter-item">
+        <div>
           <label htmlFor="model">Model:</label>
           <select id="model" name="model" value={modelFilter} onChange={handleFilterChange}>
             {getModels().map((model) => (
@@ -157,24 +132,29 @@ const Home = () => {
           </select>
         </div>
       </div>
-      <div className="auctions-grid">
-        {filteredAuctions.map((auction) => (
-          <div key={auction.id} className="auction-card">
-            {/* Display auction details here */}
-            <h3>{auction.title}</h3>
-            <p>{auction.brand}</p>
-            <p>Price: ${auction.price}</p>
-            <p>Model: {auction.model}</p>
-            {/* Add more auction details as needed */}
-          </div>
-        ))}
-      </div>
-      <div className="bid-items-grid">
+      <div className="grid grid-cols-4 gap-4">
         {filteredBidItems.map((item, index) => (
-          <div key={index} className="bid-item-card">
-            <img src={item.itemImage} alt={item.itemName} />
-            <h3>{item.itemName}</h3>
-            <p>Current Price: ${item.currentPrice}</p>
+          <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden">
+            <img
+              src={`http://127.0.0.1:8000${item.itemImage}`}
+              alt={item.itemName}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-4">
+              <h2 className="text-lg font-bold">{item.itemName}</h2>
+              <p className="text-gray-500">
+                {item.isSold ? 'Sold' : 'Available'}
+              </p>
+              <p className="text-gray-500">
+                Current Price: {item.currentPrice}
+              </p>
+              <Link
+                to={`/item/${item.id}`}
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+              >
+                View Item
+              </Link>
+            </div>
           </div>
         ))}
       </div>

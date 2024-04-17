@@ -1,0 +1,128 @@
+.user-profile {
+  max-width: 1500px;
+  width: 110%;
+  height: fit-content;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  position: relative; /* Required for positioning pseudo-elements */
+}
+
+.user-profile::before,
+.user-profile::after {
+  content: '';
+  position: absolute;
+  width: 35%;
+  height: 5px;
+  background-image: linear-gradient(to right, transparent, #ccc, transparent);
+}
+
+/* Line at the top right corner */
+.user-profile::before {
+  top: 10px;
+  bottom: 30px;
+  right: -50px;
+  transform: rotate(45deg);
+}
+
+/* Line at the bottom left corner */
+.user-profile::after {
+  bottom: 10px;
+  left: -60px;
+  transform: rotate(45deg);
+}
+
+.user-profile h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  text-align: center;
+}
+
+.user-profile .detail {
+  width: 100%;
+  margin-bottom: 10px;
+  height: 40px;
+}
+
+.user-profile .label-pair {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile .label-pair label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.user-profile .detail p {
+  margin: 0;
+}
+
+/* Separator */
+.user-profile .separator {
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  margin-bottom: 20px;
+}
+
+.delete-account-button-container {
+  text-align: right; 
+  margin-top: 10px;
+}
+
+.delete-account-button {
+  background-color:#eb0d0d;
+  color: #fff; 
+  border: none;
+  padding: 5px 10px; 
+  cursor: pointer;
+  border-radius: 20px; 
+  transition: background-color 0.3s ease; 
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.delete-account-button:hover {
+  background-color: #d72323; 
+}
+
+.trash-icon {
+  margin-right: 2px;
+  margin-left: 2px;
+  font-size: 24px;
+}
+
+.delete-account-button:hover .trash-icon {
+  display: none; 
+}
+
+.delete-account-message {
+  display: none; 
+  color: #d72323; 
+  margin-left: 10px; 
+}
+
+.delete-account-button:hover .delete-account-message {
+  display: inline; /* Show the message when button is hovered over */
+  color: white;
+  margin-right: 2px;
+  margin-left: 2px;
+}
+
+.go-back-button-container { 
+  margin-top: 50px;
+  margin-left: -150px;
+  font-size: 17px;
+}
+.go-back-link {
+  display: flex;
+  align-items: center; 
+  text-decoration: none; 
+  color: #333; 
+}
+
+

@@ -3,10 +3,17 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
-from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, BidItemCreationSerializer, BidItemSerializer
-from rest_framework import permissions, status
+from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, UserPublicSerializer, BidItemCreationSerializer, BidItemSerializer
+from rest_framework import generics, permissions, status
 from .validations import custom_validation, validate_email, validate_password, validate_userType
-from .models import BidItem
+from .models import BidItem, AppUser
+
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 
 class UserRegister(APIView):
     # anyone can register
@@ -55,6 +62,14 @@ class UserView(APIView):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
     
+class UserPublicView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    ##
+    def get(self,request, pk):
+        user = AppUser.objects.get(pk = pk)
+        serializer = UserPublicSerializer(user)
+        return Response({'seller': serializer.data}, status=status.HTTP_200_OK)
+
 # view for bit item creation
 class BidItemCreationView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -78,10 +93,17 @@ class AllBidItemView(APIView):
         bid_items = BidItem.objects.all()
         serialzer = BidItemSerializer(bid_items, many=True)
         return Response({'bidLots': serialzer.data}, status=status.HTTP_200_OK)
+# class AllBidItemsView(APIView):
+#     permission_classes = (permissions.AllowAny,)
+
+#     def get(self, request):
+#         bid_items = BidItem.objects.all()
+#         serializer = BidItemSerializer(bid_items, many=True)
+#         return Response({'bidLots': serializer.data}, status=status.HTTP_200_OK)
 
 # view to get individual bid item
 class IndividualBidItemView(APIView):
-    parser_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
     ##
     def get(self, request, pk):
         try:
@@ -92,20 +114,49 @@ class IndividualBidItemView(APIView):
         
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-class HomeView(APIView):
+
+class SendEmailView(APIView):
     permission_classes = (permissions.AllowAny,)
 
+    def post(self, request):
+        data = json.loads(request.body)
+        name = data.get('name', '')
+        email = data.get('email', '')
+        message = data.get('message', '')
+
+        try:
+            # Send email
+            send_mail(
+                subject='New Contact Form Submission',
+                message=f'Name: {name}\nEmail: {email}\nMessage: {message}',
+                from_email='sujalkoju97@gmail.com',  # Replace with your email
+                recipient_list=['sujalkoju97@gmail.com'],  # Replace with your email address to receive form submissions
+            )
+            return JsonResponse({'success': True, 'message': 'Email sent successfully'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+
     def get(self, request):
-        bid_items = BidItem.objects.all()
-        serializer = BidItemSerializer(bid_items, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse({'success': False, 'message': 'Method not allowed'}, status=405)
+# view for placing bid by buyer
+class PlaceBidView(APIView):
+    queryset = BidItem.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
-        # Validate the data using a custom validation function
-        clean_data = self.validate_bid_item_data(request.data)
-        serializer = BidItemSerializer(data=clean_data)
-        if serializer.is_valid(raise_exception=True):
-            bid_item = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        bid_item = BidItem.objects.get(pk=request.data.get("bidItemId"))
+        ## if bid about is not greater that current price
+        bid_amount = request.data.get("bidAmount")
+        if (float(bid_amount) <= float(bid_item.currentPrice)):
+            return Response({"error": "Bid amount should be greater that current price!"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        bid_item.currentPrice = bid_amount
+        bid_item.bidder = request.user
+        bid_item.save()
+        serializer = BidItemSerializer(bid_item)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+# class AllBidItemsView(generics.ListAPIView):
+#     queryset = BidItem.objects.all()
+#     serializer_class = BidItemSerializer
+#     permission_classes = (permissions.AllowAny,)
