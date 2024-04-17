@@ -158,6 +158,7 @@ class PlaceBidView(APIView):
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+<<<<<<<<< Temporary merge branch 1
 # view to get items that top bidder is the user
 class PlacedTopBidsView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -202,7 +203,3 @@ class DeleteBidItem(APIView):
         bid_item.delete()
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
-# class AllBidItemsView(generics.ListAPIView):
-#     queryset = BidItem.objects.all()
-#     serializer_class = BidItemSerializer
-#     permission_classes = (permissions.AllowAny,)

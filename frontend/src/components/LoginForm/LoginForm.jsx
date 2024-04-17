@@ -31,7 +31,7 @@ const LoginForm = () => {
         },
         onSubmit: (values) => {
             client
-                .post('/api/login', values)
+                .post('/api/login/', values)
                 .then((res) => {
                     GetCurrentUser();
                     navigate('/'); // go to home after login
