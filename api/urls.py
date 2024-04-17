@@ -3,16 +3,10 @@ from . import views
 from .views import UserDeleteView 
 
 urlpatterns = [
-<<<<<<< HEAD
     path('register', views.UserRegister.as_view(), name='register'),
     path('login', views.UserLogin.as_view(), name='login'),
     path('logout', views.UserLogout.as_view(), name='logout'),
     path('delete/', UserDeleteView.as_view(), name='delete'),
-=======
-    path('register/', views.UserRegister.as_view(), name='register'),
-    path('login/', views.UserLogin.as_view(), name='login'),
-    path('logout/', views.UserLogout.as_view(), name='logout'),
->>>>>>> b70b228cda6791c08840aff48f2b43a1479434bf
     path('user', views.UserView.as_view(), name='user'),
     path('getuser/<int:pk>/', views.UserPublicView.as_view(), name='getuser'),
     path('item/create/', views.BidItemCreationView.as_view(), name='createbid'),
