@@ -10,8 +10,7 @@
   position: relative; /* Required for positioning pseudo-elements */
 }
 
-.user-profile::before,
-.user-profile::after {
+.user-profile::before{
   content: '';
   position: absolute;
   width: 35%;
@@ -27,13 +26,6 @@
   transform: rotate(45deg);
 }
 
-/* Line at the bottom left corner */
-.user-profile::after {
-  bottom: 10px;
-  left: -60px;
-  transform: rotate(45deg);
-}
-
 .user-profile h2 {
   margin-bottom: 20px;
   font-size: 24px;
@@ -42,7 +34,7 @@
 
 .user-profile .detail {
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   height: 40px;
 }
 
@@ -71,6 +63,7 @@
 .delete-account-button-container {
   text-align: right; 
   display: inline-block;
+  margin-top: 0px;
 }
 
 .delete-account-button {
@@ -84,7 +77,7 @@
   font-size: 1rem;
   display: inline-flex;
   align-items: center;
-  margin-right: -105px;
+  margin-right: -55px;
 }
 
 .delete-account-button:hover {
@@ -137,8 +130,8 @@
   border-radius: 5px;
   display: inline-block;
   margin-right: 20px;
-  border: 2px solid #6A994E; 
- 
+  border: 2px solid #6A994E;
+  margin-top: 0px; 
 }
 
 .profile-link:hover {
@@ -148,3 +141,78 @@
 }
 
 
+.card {
+  max-width: 1500px;
+  width: 110%;
+  height: fit-content;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  position: relative; /* Required for positioning pseudo-elements */
+}
+
+.card::after{
+  content: '';
+  position: absolute;
+  width: 35%;
+  height: 5px;
+  background-image: linear-gradient(to right, transparent, #ccc, transparent); 
+}
+
+/* Line at the bottom left corner */
+.card::after {
+  bottom: 10px;
+  left: -60px;
+  transform: rotate(45deg);
+}
+
+.confirmation-modal {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 50px;
+  margin-left: 30px;
+}
+
+.confirmation-modal p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.confirmation-modal input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.confirmation-buttons-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirmation-buttons-container button {
+  background-color: #eb0d0d;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.confirmation-buttons-container button:hover {
+  background-color: #d72323;
+}
+
+.confirmation-buttons-container button + button {
+  margin-left: 10px;
+}
