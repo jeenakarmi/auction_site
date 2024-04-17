@@ -1,0 +1,31 @@
+.homepage-container {
+  width: 85%;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-width: 800px;
+  align-items: center;
+  margin-bottom: 1rem;
+  width: 73%;
+  gap: 1rem;
+}
+
+.filters > div {
+  display: flex;
+  align-items: center;
+  margin-right: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.filters .filter-label {
+  font-weight: medium;
+  margin-right: 0.25rem;
+  white-space: nowrap;
+}
+
+.filters select {
+  margin-right: 0rem; /* Add spacing between label and dropdown */
+}
