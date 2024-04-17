@@ -47,6 +47,7 @@ const ItemPage = () => {
     const [notFound, setNotFound] = useState(false);
 
     const [bidder, setBidder] = useState('');
+    const [seller, setSeller] = useState('');
 
     const formik = useFormik({
         initialValues: {
@@ -92,6 +93,12 @@ const ItemPage = () => {
         });
     };
 
+    const getSeller = (sellerId) => {
+        client.get(`/api/getuser/${sellerId}`).then((res) => {
+            setSeller(res.data.seller.username);
+        });
+    };
+
     useEffect(() => {
         setLoading(true);
         // Fetch item data based on itemId
@@ -103,6 +110,7 @@ const ItemPage = () => {
                 if (response.data.bidder) {
                     getBidder(response.data.bidder);
                 }
+                getSeller(response.data.seller);
                 setLoading(false);
             })
             .catch((error) => {
@@ -217,62 +225,59 @@ const ItemPage = () => {
     const RenderBidButton = () => {
         if (currentUser.userType === 'BUYER') {
             return (
-                <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
-                    <Heading size={'md'}>Place a bid</Heading>
-                    <form className='w-full' onSubmit={formik.handleSubmit}>
-                        <FormControl isRequired>
-                            <InputGroup>
-                                <InputLeftElement>
-                                    <Text fontWeight={700}>Rs.</Text>
-                                </InputLeftElement>
-                                <Input
-                                    type='number'
-                                    name='bidAmount'
-                                    placeholder='Enter amount'
-                                    value={formik.values.bidAmount}
-                                    onChange={formik.handleChange}
-                                />
-                            </InputGroup>
-                        </FormControl>
-                        <Button width={'100%'} mt={2} type='submit'>
-                            <FaGavel className='mr-2' /> Bid
-                        </Button>
-                    </form>
-                </VStack>
+                !itemData.isSold && (
+                    <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
+                        <Heading size={'md'}>Place a bid</Heading>
+                        <form className='w-full' onSubmit={formik.handleSubmit}>
+                            <FormControl isRequired>
+                                <InputGroup>
+                                    <InputLeftElement>
+                                        <Text fontWeight={700}>Rs.</Text>
+                                    </InputLeftElement>
+                                    <Input
+                                        type='number'
+                                        name='bidAmount'
+                                        placeholder='Enter amount'
+                                        value={formik.values.bidAmount}
+                                        onChange={formik.handleChange}
+                                    />
+                                </InputGroup>
+                            </FormControl>
+                            <Button width={'100%'} mt={2} type='submit'>
+                                <FaGavel className='mr-2' /> Bid
+                            </Button>
+                        </form>
+                    </VStack>
+                )
             );
-        } else if (!itemData.isSold && itemData.seller == currentUser.id) {
-            return (
-                <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
-                    <Button width={'100%'} onClick={handleCloseAuction}>
-                        <FaGavel className='mr-2' /> Close Auction
-                    </Button>
+        } else {
+            if (!itemData.isSold && itemData.seller == currentUser.id) {
+                return (
+                    <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
+                        <Button width={'100%'} onClick={handleCloseAuction}>
+                            <FaGavel className='mr-2' /> Close Auction
+                        </Button>
+                        <Button
+                            width={'100%'}
+                            colorScheme={'red'}
+                            onClick={handleDeleteAuction}
+                        >
+                            <FaTrashCan className='mr-2' /> Delete Auction
+                        </Button>
+                    </VStack>
+                );
+            } else if (itemData.isSold && itemData.isPendingPayment) {
+                return (
                     <Button
                         width={'100%'}
-                        colorScheme={'red'}
-                        onClick={handleDeleteAuction}
+                        mt={5}
+                        onClick={handlePaymentReceived}
                     >
-                        <FaTrashCan className='mr-2' /> Delete Auction
+                        <GiReceiveMoney className='mr-2' fontSize={'1.5rem'} />{' '}
+                        Payment Received
                     </Button>
-                </VStack>
-            );
-        } else if (itemData.isSold && itemData.isPendingPayment) {
-            return (
-                <Button width={'100%'} mt={5} onClick={handlePaymentReceived}>
-                    <GiReceiveMoney className='mr-2' fontSize={'1.5rem'} />{' '}
-                    Payment Received
-                </Button>
-            );
-        } else if (itemData.isSold && !itemData.isPendingPayment) {
-            return (
-                <Button
-                    width={'100%'}
-                    colorScheme={'red'}
-                    mt={5}
-                    onClick={handleDeleteItem}
-                >
-                    <FaTrashCan className='mr-2' /> Delete Auction
-                </Button>
-            );
+                );
+            }
         }
     };
 
@@ -396,6 +401,15 @@ const ItemPage = () => {
                                     <Td letterSpacing={1}>
                                         {itemData.creationDate.slice(0, 10)}
                                     </Td>
+                                </Tr>
+                                <Tr
+                                    justifyContent={'space-between'}
+                                    width={'100%'}
+                                >
+                                    <Td fontWeight={600} letterSpacing={1}>
+                                        Seller:
+                                    </Td>
+                                    <Td letterSpacing={1}>{seller}</Td>
                                 </Tr>
                             </Tbody>
                         </Table>

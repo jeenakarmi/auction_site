@@ -24,6 +24,9 @@ import ActiveLotsPage from './pages/ActiveLotsPage/ActiveLotsPage';
 import SoldLots from './pages/SoldLots/SoldLots';
 import PendingPaymentReceive from './pages/PendingPaymentReceive/PendingPaymentReceive';
 
+import PurchasedBids from './pages/PurchasedBids/PurchasedBids';
+import PendingPayments from './pages/PendingPayments/PendingPayments';
+
 const App = () => {
     const { currentUser } = useGlobalContext();
 
@@ -51,6 +54,11 @@ const App = () => {
                 <Route
                     path='/pending-receive-payment-bids'
                     element={<PendingPaymentReceive />}
+                />
+                <Route path='/purchased-bids' element={<PurchasedBids />} />
+                <Route
+                    path='/pending-make-payment-bids'
+                    element={<PendingPayments />}
                 />
             </Routes>
         </Stack>
