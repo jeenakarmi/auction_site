@@ -1,11 +1,57 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link,useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../../context/GlobalContext';
 import { MdDelete, MdKeyboardArrowLeft } from 'react-icons/md';
+import axios from 'axios';
 import './userprofile.css';
 
 const UserProfile = () => {
-    const { currentUser } = useGlobalContext();
+    const { currentUser , client} = useGlobalContext();
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+
+    const getCSRFToken = () => {
+        const csrfCookie = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='));
+        if (csrfCookie) {
+            return csrfCookie.split('=')[1];
+        } else {
+            console.error('CSRF token not found in cookies.');
+            return null;
+        }
+    };
+
+    const handleDeleteAccount = () => {
+        const csrfToken = getCSRFToken(); 
+        if (csrfToken) {  
+        const userId = currentUser.id; // Assuming currentUser contains the user information
+        client.delete('/api/delete/', {
+            data: { id: userId }, // Send the user ID instead of the password
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
+    
+        })
+                    .then((response) => {
+                        // Handle successful deletion
+                        console.log(response.data);
+                        alert('Account Deleted!');
+                        // Redirect or display a success message as needed
+                        navigate('/');// go to home
+                    })
+                    .catch((error) => {
+                        // Handle errors
+                        console.error('Error deleting account:', error.response.data);
+                        // Display an error message to the user
+             });
+
+              console.log(' Deleting account...');
+            }
+    };
+
+    const handleCancelDelete = () => {
+        setConfirmDelete(false);
+    };
 
     const RenderBidsPageButtons = () => {
         if (currentUser.userType === 'BUYER') {
@@ -97,30 +143,33 @@ const UserProfile = () => {
                                 <p>{currentUser.userType}</p>
                             </div>
                         </div>
-                        <div className='separator'></div>
-                        {/* <div className="detail">
-       <div className="label-pair">
-        <label>Total Trades:</label>
-        <p>{currentUser.totalTrades}</p>
-      </div>
-      </div>
-            <div className='separator'></div> */}
-                        <div className='actions-container'>
-                            {currentUser && RenderBidsPageButtons()}
-                            <div className='delete-account-button-container'>
-                                <button className='delete-account-button'>
-                                    <MdDelete className='trash-icon' />
-                                    <span className='delete-account-message'>
-                                        Delete Account
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
                     </>
                 ) : (
-                    <div>Loading...</div>
+                    <div className='loading'>Loading...</div>
                 )}
             </div>
+
+            <div className='card'>
+                {currentUser && RenderBidsPageButtons()}
+                <div className='delete-account-button-container'>
+                    <button className='delete-account-button' onClick={() => setConfirmDelete(true)}>
+                        <MdDelete className='trash-icon' /> {/* Add MdDelete icon */}
+                        <span className='delete-account-message'>Delete Account</span>
+                    </button>
+                </div>
+            </div>
+                
+            {/* Confirmation modal for delete */}
+            {confirmDelete && (
+                <div className='confirmation-modal'>
+                    <p>Are you sure you want to delete your account?</p>
+                
+                   <div className='confirmation-buttons-container'>
+    <button onClick={handleCancelDelete}>Cancel</button>
+    <button onClick={handleDeleteAccount}>Delete</button>
+  </div>
+                </div>
+            )}
 
             <div className='go-back-button-container'>
                 <Link to='/' className='go-back-link'>

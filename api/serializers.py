@@ -33,6 +33,31 @@ class UserLoginSerializer(serializers.Serializer):
         if not user:
             raise ValidationError('user not found')
         return user
+    
+class UserDeleteSerializer(serializers.Serializer):
+    """
+    Serializer for deleting user accounts.
+    """
+    id = serializers.IntegerField(required=True)
+
+    def validate_id(self, value):
+        """
+        Validate that the provided user ID exists.
+        """
+        try:
+            user = UserModel.objects.get(pk=value)
+        except UserModel.DoesNotExist:
+            raise serializers.ValidationError("User with this ID does not exist.")
+        return value
+
+    def delete_user(self, validated_data):
+        """
+        Delete the user account.
+        """
+        user_id = validated_data.get('id')
+        user = UserModel.objects.get(pk=user_id)
+        user.delete()
+        return {"message": "User account deleted successfully."}
 
 class UserSerializer(serializers.ModelSerializer):
     # this serializer is based on Modle and returns the user
