@@ -17,6 +17,14 @@ const UserProfile = () => {
                         </Link>
                     </div>
                     <div className='link-container'>
+                        <Link
+                            to='/pending-make-payment-bids'
+                            className='profile-link'
+                        >
+                            Pending Payment
+                        </Link>
+                    </div>
+                    <div className='link-container'>
                         <Link to='/placed-top-bids' className='profile-link'>
                             Placed Top Bids
                         </Link>
@@ -29,6 +37,14 @@ const UserProfile = () => {
                     <div className='link-container'>
                         <Link to='/sold-lots' className='profile-link'>
                             Sold Lots
+                        </Link>
+                    </div>
+                    <div className='link-container'>
+                        <Link
+                            to='/pending-receive-payment-bids'
+                            className='profile-link'
+                        >
+                            Pending Payment
                         </Link>
                     </div>
                     <div className='link-container'>

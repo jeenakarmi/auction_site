@@ -39,7 +39,7 @@ import axios from 'axios';
 
 const ItemPage = () => {
     const navigate = useNavigate();
-    const { client } = useGlobalContext();
+    const { client, currentUser } = useGlobalContext();
     const { id } = useParams();
     const [itemData, setItemData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -84,8 +84,6 @@ const ItemPage = () => {
                 alert(`Something went wrong! Bid not placed!`);
             });
     };
-
-    const { currentUser } = useGlobalContext();
 
     const getBidder = (bidderId) => {
         client.get(`/api/getuser/${bidderId}`).then((res) => {
@@ -196,7 +194,8 @@ const ItemPage = () => {
             );
         } else {
             return (
-                !itemData.isSold && (
+                !itemData.isSold &&
+                itemData.seller == currentUser.id && (
                     <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
                         <Button width={'100%'} onClick={handleCloseAuction}>
                             <FaGavel className='mr-2' /> Close Auction
