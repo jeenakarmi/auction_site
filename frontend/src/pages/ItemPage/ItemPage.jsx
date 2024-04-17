@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
-import { FaGavel, FaTrashCan } from 'react-icons/fa6';
+import { FaGavel, FaTrashCan, FaRegMoneyBill1 } from 'react-icons/fa6';
+import { GiReceiveMoney } from 'react-icons/gi';
 import { IoCaretBackSharp } from 'react-icons/io5';
 import { useParams } from 'react-router-dom';
 
@@ -165,6 +166,53 @@ const ItemPage = () => {
                 });
         }
     };
+    const handleDeleteItem = () => {
+        const xsrfCookies = document.cookie
+            .split(';')
+            .map((c) => c.trim())
+            .filter((c) => c.startsWith('csrftoken='))[0]
+            .split('=')[1];
+        const config = {
+            headers: {
+                'X-CSRFToken': xsrfCookies,
+            },
+        };
+        if (confirm(`Delete this item?`)) {
+            client
+                .delete(`/api/item/delete/${id}/`, config)
+                .then((res) => {
+                    navigate('/sold-lots');
+                    alert('Item deleted!');
+                })
+                .catch((err) => {
+                    alert('Something went wrong! Try again later!');
+                });
+        }
+    };
+
+    const handlePaymentReceived = () => {
+        const xsrfCookies = document.cookie
+            .split(';')
+            .map((c) => c.trim())
+            .filter((c) => c.startsWith('csrftoken='))[0]
+            .split('=')[1];
+        const config = {
+            headers: {
+                'X-CSRFToken': xsrfCookies,
+            },
+        };
+        if (confirm(`Received payment from ${bidder}?`)) {
+            client
+                .post('/api/item/payment-received', { bidItemId: id }, config)
+                .then((res) => {
+                    navigate('/pending-receive-payment-bids');
+                    alert('Success!');
+                })
+                .catch((err) => {
+                    alert('Something went wrong! Try again later!');
+                });
+        }
+    };
 
     const RenderBidButton = () => {
         if (currentUser.userType === 'BUYER') {
@@ -192,23 +240,38 @@ const ItemPage = () => {
                     </form>
                 </VStack>
             );
-        } else {
+        } else if (!itemData.isSold && itemData.seller == currentUser.id) {
             return (
-                !itemData.isSold &&
-                itemData.seller == currentUser.id && (
-                    <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
-                        <Button width={'100%'} onClick={handleCloseAuction}>
-                            <FaGavel className='mr-2' /> Close Auction
-                        </Button>
-                        <Button
-                            width={'100%'}
-                            colorScheme={'red'}
-                            onClick={handleDeleteAuction}
-                        >
-                            <FaTrashCan className='mr-2' /> Delete Auction
-                        </Button>
-                    </VStack>
-                )
+                <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
+                    <Button width={'100%'} onClick={handleCloseAuction}>
+                        <FaGavel className='mr-2' /> Close Auction
+                    </Button>
+                    <Button
+                        width={'100%'}
+                        colorScheme={'red'}
+                        onClick={handleDeleteAuction}
+                    >
+                        <FaTrashCan className='mr-2' /> Delete Auction
+                    </Button>
+                </VStack>
+            );
+        } else if (itemData.isSold && itemData.isPendingPayment) {
+            return (
+                <Button width={'100%'} mt={5} onClick={handlePaymentReceived}>
+                    <GiReceiveMoney className='mr-2' fontSize={'1.5rem'} />{' '}
+                    Payment Received
+                </Button>
+            );
+        } else if (itemData.isSold && !itemData.isPendingPayment) {
+            return (
+                <Button
+                    width={'100%'}
+                    colorScheme={'red'}
+                    mt={5}
+                    onClick={handleDeleteItem}
+                >
+                    <FaTrashCan className='mr-2' /> Delete Auction
+                </Button>
             );
         }
     };
