@@ -60,12 +60,12 @@ class UserLogout(APIView):
 
 class UserDeleteView(APIView):
     # View for user deletion
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (permissions.IsAuthenticated,)
 
     def delete(self, request):
-        serializer = UserDeleteSerializer(data=request.data)
-        if serializer.is_valid():
-            user_id = serializer.validated_data['id']
+        serializer = UserDeleteSerializer(User)
+        if serializer.is_valid(data=request.data):
+            user_id = request.user.id
             user = User.objects.get(pk=user_id)
             user.delete()
             return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)

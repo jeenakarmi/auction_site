@@ -2,28 +2,36 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGlobalContext } from '../../context/GlobalContext';
 import { MdDelete, MdKeyboardArrowLeft } from 'react-icons/md';
+import axios from 'axios';
 import './userprofile.css';
 
 const UserProfile = () => {
-    const { currentUser } = useGlobalContext();
+    const { currentUser , client} = useGlobalContext();
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [password, setPassword] = useState('');
 
     const handleDeleteAccount = () => {
-        axios
-            .delete('/api/delete-account/', {
-                data: { password: password },
-            })
-            .then((response) => {
-                // Handle successful deletion
-                console.log(response.data);
-                // Redirect or display a success message as needed
-            })
-            .catch((error) => {
-                // Handle errors
-                console.error('Error deleting account:', error.response.data);
-                // Display an error message to the user
-            });
+        const correctPassword = currentUser.password;           
+            if (password === correctPassword) {
+                    client.delete('/api/delete/', {
+                        data: { password: password },
+                    })
+                    .then((response) => {
+                        // Handle successful deletion
+                        console.log(response.data);
+                        // Redirect or display a success message as needed
+                    })
+                    .catch((error) => {
+                        // Handle errors
+                        console.error('Error deleting account:', error.response.data);
+                        // Display an error message to the user
+             });
+    
+          
+              console.log('Password is correct. Deleting account...');
+            } else {
+              console.log('Incorrect password. Account deletion failed.');
+            }
     };
 
     const handleCancelDelete = () => {
