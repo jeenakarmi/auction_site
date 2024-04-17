@@ -202,3 +202,15 @@ class DeleteBidItem(APIView):
         bid_item.delete()
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
+      
+class PaymentReceivedView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    ##
+    def post(self, request):
+        bid_item = BidItem.objects.get(pk=request.data.get("bidItemId"))
+        if (bid_item.bidder is None):
+            return Response({'error': 'No bidder yet!'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        bid_item.isPendingPayment = False
+        bid_item.save()
+        serializer = BidItemSerializer(bid_item)
+        return Response(serializer.data, status=status.HTTP_200_OK)
