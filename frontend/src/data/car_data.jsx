@@ -311,7 +311,20 @@ export const car_data = [
         brandName: 'Tesla',
         models: [
             {
-                modelType: 'Electric Vehicle',
+                modelType: 'SUV',
+                vehicles: [
+                    {
+                        vehicleName: 'Model X',
+                        variant: ['Long Range', 'Plaid'],
+                    },
+                    {
+                        vehicleName: 'Model Y',
+                        variant: ['Long Range', 'Performance'],
+                    },
+                ],
+            },
+            {
+                modelType: 'Sedan',
                 vehicles: [
                     {
                         vehicleName: 'Model S',
@@ -325,13 +338,27 @@ export const car_data = [
                             'Performance',
                         ],
                     },
+                ],
+            },
+            {
+                modelType: 'Truck',
+                vehicles: [
                     {
-                        vehicleName: 'Model X',
-                        variant: ['Long Range', 'Plaid'],
+                        vehicleName: 'Cybertruck',
+                        variant: [],
                     },
                     {
-                        vehicleName: 'Model Y',
-                        variant: ['Long Range', 'Performance'],
+                        vehicleName: 'Semi-truck',
+                        variant: [],
+                    },
+                ],
+            },
+            {
+                modelType: 'Sport',
+                vehicles: [
+                    {
+                        vehicleName: 'Roadster',
+                        variant: [],
                     },
                 ],
             },
