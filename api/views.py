@@ -158,7 +158,6 @@ class PlaceBidView(APIView):
         serializer = BidItemSerializer(bid_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-<<<<<<<<< Temporary merge branch 1
 # view to get items that top bidder is the user
 class PlacedTopBidsView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
