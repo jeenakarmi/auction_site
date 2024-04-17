@@ -32,7 +32,7 @@ const RegisterForm = () => {
         },
         onSubmit: (values) => {
             client
-                .post('/api/register', values)
+                .post('/api/register/', values)
                 .then(() => {
                     navigate('/login');
                     alert('Account Created!');
