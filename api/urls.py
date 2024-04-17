@@ -17,3 +17,4 @@ urlpatterns = [
     path('items/seller-active-lots', views.SellerActiveLotsView.as_view(), name='selleractivelots'),
     path('item/close-auction', views.CloseAuctionView.as_view(), name='closeauction'),
     path('item/delete/<int:pk>/', views.DeleteBidItem.as_view(), name='deleteitem')
+]
