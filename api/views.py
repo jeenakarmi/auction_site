@@ -6,7 +6,9 @@ from rest_framework.response import Response
 from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, UserPublicSerializer, BidItemCreationSerializer, BidItemSerializer
 from rest_framework import permissions, status
 from .validations import custom_validation, validate_email, validate_password, validate_userType
+from .serializers import UserDeleteSerializer
 from .models import BidItem, AppUser
+from django.contrib.auth.models import User  # Assuming UserModel is User
 
 from django.core.mail import send_mail
 from django.http import JsonResponse
@@ -56,6 +58,20 @@ class UserLogout(APIView):
         logout(request)
         return Response(status=status.HTTP_200_OK)
 
+class UserDeleteView(APIView):
+    # View for user deletion
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request):
+        serializer = UserDeleteSerializer(data=request.data)
+        if serializer.is_valid():
+            user_id = serializer.validated_data['id']
+            user = User.objects.get(pk=user_id)
+            user.delete()
+            return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 class UserView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = (SessionAuthentication, )

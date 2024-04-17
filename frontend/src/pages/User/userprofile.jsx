@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGlobalContext } from '../../context/GlobalContext';
 import { MdDelete, MdKeyboardArrowLeft } from 'react-icons/md';
@@ -6,6 +6,29 @@ import './userprofile.css';
 
 const UserProfile = () => {
     const { currentUser } = useGlobalContext();
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [password, setPassword] = useState('');
+
+    const handleDeleteAccount = () => {
+        axios
+            .delete('/api/delete-account/', {
+                data: { password: password },
+            })
+            .then((response) => {
+                // Handle successful deletion
+                console.log(response.data);
+                // Redirect or display a success message as needed
+            })
+            .catch((error) => {
+                // Handle errors
+                console.error('Error deleting account:', error.response.data);
+                // Display an error message to the user
+            });
+    };
+
+    const handleCancelDelete = () => {
+        setConfirmDelete(false);
+    };
 
     const RenderBidsPageButtons = () => {
         if (currentUser.userType === 'BUYER') {
@@ -81,30 +104,38 @@ const UserProfile = () => {
                                 <p>{currentUser.userType}</p>
                             </div>
                         </div>
-                        <div className='separator'></div>
-                        {/* <div className="detail">
-       <div className="label-pair">
-        <label>Total Trades:</label>
-        <p>{currentUser.totalTrades}</p>
-      </div>
-      </div>
-            <div className='separator'></div> */}
-                        <div className='actions-container'>
-                            {currentUser && RenderBidsPageButtons()}
-                            <div className='delete-account-button-container'>
-                                <button className='delete-account-button'>
-                                    <MdDelete className='trash-icon' />
-                                    <span className='delete-account-message'>
-                                        Delete Account
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
                     </>
                 ) : (
-                    <div>Loading...</div>
+                    <div className='loading'>Loading...</div>
                 )}
             </div>
+
+            <div className='card'>
+                {currentUser && RenderBidsPageButtons()}
+                <div className='delete-account-button-container'>
+                    <button className='delete-account-button' onClick={() => setConfirmDelete(true)}>
+                        <MdDelete className='trash-icon' /> {/* Add MdDelete icon */}
+                        <span className='delete-account-message'>Delete Account</span>
+                    </button>
+                </div>
+            </div>
+                
+            {/* Confirmation modal for delete */}
+            {confirmDelete && (
+                <div className='confirmation-modal'>
+                    <p>Are you sure you want to delete your account?</p>
+                    <input
+                        type='password'
+                        placeholder='Enter your password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <div>
+                        <button onClick={handleCancelDelete}>Cancel</button>
+                        <button onClick={handleDeleteAccount}>Delete</button>
+                    </div>
+                </div>
+            )}
 
             <div className='go-back-button-container'>
                 <Link to='/' className='go-back-link'>
