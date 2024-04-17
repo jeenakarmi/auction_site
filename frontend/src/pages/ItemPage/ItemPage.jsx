@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
-import { FaGavel, FaTrashCan } from 'react-icons/fa6';
+import { FaGavel, FaTrashCan, FaRegMoneyBill1 } from 'react-icons/fa6';
+import { GiReceiveMoney } from 'react-icons/gi';
 import { IoCaretBackSharp } from 'react-icons/io5';
 import { useParams } from 'react-router-dom';
 
@@ -39,13 +40,14 @@ import axios from 'axios';
 
 const ItemPage = () => {
     const navigate = useNavigate();
-    const { client } = useGlobalContext();
+    const { client, currentUser } = useGlobalContext();
     const { id } = useParams();
     const [itemData, setItemData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
 
     const [bidder, setBidder] = useState('');
+    const [seller, setSeller] = useState('');
 
     const formik = useFormik({
         initialValues: {
@@ -85,11 +87,15 @@ const ItemPage = () => {
             });
     };
 
-    const { currentUser } = useGlobalContext();
-
     const getBidder = (bidderId) => {
         client.get(`/api/getuser/${bidderId}`).then((res) => {
             setBidder(res.data.seller.username);
+        });
+    };
+
+    const getSeller = (sellerId) => {
+        client.get(`/api/getuser/${sellerId}`).then((res) => {
+            setSeller(res.data.seller.username);
         });
     };
 
@@ -104,6 +110,7 @@ const ItemPage = () => {
                 if (response.data.bidder) {
                     getBidder(response.data.bidder);
                 }
+                getSeller(response.data.seller);
                 setLoading(false);
             })
             .catch((error) => {
@@ -167,36 +174,85 @@ const ItemPage = () => {
                 });
         }
     };
+    const handleDeleteItem = () => {
+        const xsrfCookies = document.cookie
+            .split(';')
+            .map((c) => c.trim())
+            .filter((c) => c.startsWith('csrftoken='))[0]
+            .split('=')[1];
+        const config = {
+            headers: {
+                'X-CSRFToken': xsrfCookies,
+            },
+        };
+        if (confirm(`Delete this item?`)) {
+            client
+                .delete(`/api/item/delete/${id}/`, config)
+                .then((res) => {
+                    navigate('/sold-lots');
+                    alert('Item deleted!');
+                })
+                .catch((err) => {
+                    alert('Something went wrong! Try again later!');
+                });
+        }
+    };
+
+    const handlePaymentReceived = () => {
+        const xsrfCookies = document.cookie
+            .split(';')
+            .map((c) => c.trim())
+            .filter((c) => c.startsWith('csrftoken='))[0]
+            .split('=')[1];
+        const config = {
+            headers: {
+                'X-CSRFToken': xsrfCookies,
+            },
+        };
+        if (confirm(`Received payment from ${bidder}?`)) {
+            client
+                .post('/api/item/payment-received', { bidItemId: id }, config)
+                .then((res) => {
+                    navigate('/pending-receive-payment-bids');
+                    alert('Success!');
+                })
+                .catch((err) => {
+                    alert('Something went wrong! Try again later!');
+                });
+        }
+    };
 
     const RenderBidButton = () => {
         if (currentUser.userType === 'BUYER') {
             return (
-                <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
-                    <Heading size={'md'}>Place a bid</Heading>
-                    <form className='w-full' onSubmit={formik.handleSubmit}>
-                        <FormControl isRequired>
-                            <InputGroup>
-                                <InputLeftElement>
-                                    <Text fontWeight={700}>Rs.</Text>
-                                </InputLeftElement>
-                                <Input
-                                    type='number'
-                                    name='bidAmount'
-                                    placeholder='Enter amount'
-                                    value={formik.values.bidAmount}
-                                    onChange={formik.handleChange}
-                                />
-                            </InputGroup>
-                        </FormControl>
-                        <Button width={'100%'} mt={2} type='submit'>
-                            <FaGavel className='mr-2' /> Bid
-                        </Button>
-                    </form>
-                </VStack>
+                !itemData.isSold && (
+                    <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
+                        <Heading size={'md'}>Place a bid</Heading>
+                        <form className='w-full' onSubmit={formik.handleSubmit}>
+                            <FormControl isRequired>
+                                <InputGroup>
+                                    <InputLeftElement>
+                                        <Text fontWeight={700}>Rs.</Text>
+                                    </InputLeftElement>
+                                    <Input
+                                        type='number'
+                                        name='bidAmount'
+                                        placeholder='Enter amount'
+                                        value={formik.values.bidAmount}
+                                        onChange={formik.handleChange}
+                                    />
+                                </InputGroup>
+                            </FormControl>
+                            <Button width={'100%'} mt={2} type='submit'>
+                                <FaGavel className='mr-2' /> Bid
+                            </Button>
+                        </form>
+                    </VStack>
+                )
             );
         } else {
-            return (
-                !itemData.isSold && (
+            if (!itemData.isSold && itemData.seller == currentUser.id) {
+                return (
                     <VStack alignItems={'flex-start'} mt={5} width={'100%'}>
                         <Button width={'100%'} onClick={handleCloseAuction}>
                             <FaGavel className='mr-2' /> Close Auction
@@ -209,8 +265,19 @@ const ItemPage = () => {
                             <FaTrashCan className='mr-2' /> Delete Auction
                         </Button>
                     </VStack>
-                )
-            );
+                );
+            } else if (itemData.isSold && itemData.isPendingPayment) {
+                return (
+                    <Button
+                        width={'100%'}
+                        mt={5}
+                        onClick={handlePaymentReceived}
+                    >
+                        <GiReceiveMoney className='mr-2' fontSize={'1.5rem'} />{' '}
+                        Payment Received
+                    </Button>
+                );
+            }
         }
     };
 
@@ -334,6 +401,15 @@ const ItemPage = () => {
                                     <Td letterSpacing={1}>
                                         {itemData.creationDate.slice(0, 10)}
                                     </Td>
+                                </Tr>
+                                <Tr
+                                    justifyContent={'space-between'}
+                                    width={'100%'}
+                                >
+                                    <Td fontWeight={600} letterSpacing={1}>
+                                        Seller:
+                                    </Td>
+                                    <Td letterSpacing={1}>{seller}</Td>
                                 </Tr>
                             </Tbody>
                         </Table>

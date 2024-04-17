@@ -7,22 +7,23 @@ import {
     Text,
     Link as ChakraLink,
 } from '@chakra-ui/react';
+import BidItem from '../../components/BidItem/BidItem';
 
 import { useGlobalContext } from '../../context/GlobalContext';
 
-import BidItem from '../../components/BidItem/BidItem';
-
-const PlacedTopBids = () => {
+const SoldLots = () => {
     const { client } = useGlobalContext();
 
     const [placedTopBids, setPlacedTopBids] = useState([]);
 
     const getPlacedTopBids = () => {
         client
-            .get('/api/items/placed-top-bids')
+            .get('/api/items/seller-active-lots')
             .then((res) => {
                 setPlacedTopBids(
-                    res.data.bidLots.filter((bidlot) => !bidlot.isSold)
+                    res.data.bidLots.filter(
+                        (bidlot) => bidlot.isSold && !bidlot.isPendingPayment
+                    )
                 );
             })
             .catch((err) => console.log(err));
@@ -41,7 +42,7 @@ const PlacedTopBids = () => {
             gap={10}
             marginY={10}
         >
-            <Heading size={'lg'}>Your Placed Top Bids</Heading>
+            <Heading size={'lg'}>Your Sold Lots</Heading>
             <Stack
                 w={'100%'}
                 direction={'row'}
@@ -62,4 +63,4 @@ const PlacedTopBids = () => {
     );
 };
 
-export default PlacedTopBids;
+export default SoldLots;

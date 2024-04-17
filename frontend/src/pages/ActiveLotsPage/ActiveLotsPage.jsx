@@ -20,7 +20,9 @@ const ActiveLotsPage = () => {
         client
             .get('/api/items/seller-active-lots')
             .then((res) => {
-                setPlacedTopBids(res.data.bidLots);
+                setPlacedTopBids(
+                    res.data.bidLots.filter((bidlot) => !bidlot.isSold)
+                );
             })
             .catch((err) => console.log(err));
     };
@@ -38,7 +40,7 @@ const ActiveLotsPage = () => {
             gap={10}
             marginY={10}
         >
-            <Heading size={'lg'}>Your Placed Top Bids</Heading>
+            <Heading size={'lg'}>Your Active Lots</Heading>
             <Stack
                 w={'100%'}
                 direction={'row'}
