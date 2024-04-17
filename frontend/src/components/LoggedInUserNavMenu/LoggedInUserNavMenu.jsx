@@ -23,7 +23,7 @@ const LoggedInUserNavMenu = () => {
 
     const handleLogout = () => {
         client
-            .post('/api/logout', { withCredentials: true })
+            .post('/api/logout/', { withCredentials: true })
             .then((res) => {
                 setCurrentUser(null);
                 setRegistrationToggle(false);
